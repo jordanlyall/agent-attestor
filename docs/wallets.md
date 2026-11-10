@@ -180,3 +180,8 @@ files changed.
 **On `phase0-v5`** (commit `819c70d`): two fresh clones gave byte-identical `metrics.json` on the
 three TWAP wallets (#2 `0066e3e7…`, #3 `c9ac21b1…`, #11 `4c1c40ff…`), each equal to the repo's own
 output. Live `verify` returned MATCH on #11 (24 of 52 raw files changed) and #3 (35 of 65 changed).
+
+**On `phase0-v6`** (commit `b94434c`): live `verify` returned MATCH on all 19 scorable wallets.
+The first full run, on v5, returned MISMATCH on 9: only the integrity counts differed (checks run
+to the fetch time, and HL compacts old funding rows). v6 moved those counts to the manifest. No
+metric value changed on any wallet.
