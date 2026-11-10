@@ -1,4 +1,4 @@
-# Methodology (phase0-v4)
+# Methodology (phase0-v5)
 
 The scorer turns a snapshot of raw public API responses into metrics. It is a pure function: no
 network, no clock, no randomness. Every number is a `decimal.js` decimal (60 significant digits,
@@ -27,6 +27,10 @@ to the position and takes `sz * px` from collateral. This is HL's own identity
 - `unifiedAccount` / `portfolioMargin`: spot balances already include perp equity at mark, so we
   subtract `sign(szi) * positionValue` per position to avoid counting positions twice.
 
+**Fills** come from two endpoints. `userFillsByTime` never serves TWAP slices (the small timed
+fills a TWAP order is split into); those come only from `userTwapSliceFillsByTime`, wrapped with
+the order's `twapId`. The scorer merges both. A fill served by both is used once.
+
 **Walk back.** Every fill, funding payment and ledger entry from the period start to the anchor is
 undone in reverse to get holdings at the period start. Then the scorer walks forward, applying
 events, and takes a mark at each 00:00 UTC. A mark at M includes events with `time < M`.
@@ -34,12 +38,30 @@ events, and takes a mark at each 00:00 UTC. A mark at M includes events with `ti
 Cash is exact: it is a sum of decimal strings HL published. Positions are exact. **Prices are the
 one approximation** (section 3).
 
-**Fill-by-fill check.** Each fill carries HL's `startPosition` (perp size or spot balance before the
-fill). The scorer compares its replayed value with it on every fill from the period start to the
-anchor (fills after the period also drive the walk back). A difference above 0.000001 means some
-position changed without a public event, so every earlier holding is wrong: scoring stops with an
-error. Smaller differences are rounding dust HL applies without an event; they are counted in
-`integrity.positionDust` and `positionMaxDust`.
+**Completeness checks.** The walk back is only right if no event is missing. Three checks run
+from the period start to the anchor; any failure stops scoring with an error.
+
+1. **startPosition.** Each fill carries HL's position (perp size or spot balance) before it. The
+   replayed value must agree within 0.000001. Smaller differences are rounding dust HL applies
+   without an event (`integrity.positionDust`, `positionMaxDust`). This check has a blind spot:
+   if an opening fill is missing, undoing the later close invents the position from before the
+   opening, and that agrees with every `startPosition`. It only proves positions just before
+   fills the scorer has.
+2. **Hourly funding.** HL charges funding every hour on every open perp position, and each
+   hourly row states the size it charged on (`delta.szi`). At every hour the replay's perp
+   positions must equal those sizes, a held position with no row fails, and a row for a position
+   the replay does not hold fails. This closes the blind spot for perps. Older funding comes as
+   one row per coin per day (`nSamples` set); such a day only shows the position existed that
+   day, so hours inside it are not checked (`integrity.fundingPositionChecks` counts the hours
+   checked).
+3. **TWAP coverage.** For every TWAP that ran during the period (from `twapHistory`), the served
+   slices must add up exactly to the size HL says the order executed. The slice endpoint stops
+   serving old slices, and a slice missing before the first served one is invisible to check 1.
+   A TWAP still running at the anchor, a slice whose order `twapHistory` does not list, or a
+   `twapHistory` that hits its 2000-row cap without reaching the period start also stop scoring.
+
+Spot balances have no hourly check, so a missing spot fill outside a TWAP is caught only by
+check 1.
 
 The fetcher refuses to anchor while events land within 5 s of the anchor time (it retries up to 6
 times), so the anchor and the event streams agree.
@@ -182,5 +204,10 @@ cash or flows: if the replay missed a fee or a transfer, the miss shows.
 - Spam or illiquid spot tokens are valued at their last trade, which may not be how HL values them.
 - `borrowLend`, unknown ledger types, and tokens without a USDC pair stop scoring.
 - Vault and staking value is outside the scored account; HL's portfolio may include it.
-- If HL's 10,000-fill cap applies to an account, early fills are missing; the position check would
-  show mismatches.
+- If HL's 10,000-fill cap applies to an account, early fills are missing. The checks in section 2
+  catch this for perps and TWAPs; a missing ordinary spot fill is caught only when a later spot
+  fill's `startPosition` disagrees.
+- A TWAP that started before the slice endpoint's retention cannot be scored, even when the
+  missing slices are outside the period: the endpoint does not say which ones are gone.
+- `phase0-v1` to `v4` did not fetch TWAP slices. Their results are wrong for any account that
+  used TWAPs.

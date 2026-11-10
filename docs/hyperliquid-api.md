@@ -9,7 +9,9 @@ and the live API disagree, both are noted. "Observed" means seen on real wallets
 
 | type | body | used for |
 |---|---|---|
-| `userFillsByTime` | `{user, startTime, endTime?, aggregateByTime?}` | every fill, perp and spot |
+| `userFillsByTime` | `{user, startTime, endTime?, aggregateByTime?}` | every fill except TWAP slices, perp and spot |
+| `userTwapSliceFillsByTime` | `{user, startTime, endTime?}` | TWAP slice fills, which `userFillsByTime` never serves |
+| `twapHistory` | `{user}` | every TWAP order's state changes, with executed size (coverage check) |
 | `userFunding` | `{user, startTime, endTime?}` | funding payments |
 | `userNonFundingLedgerUpdates` | `{user, startTime, endTime?}` | deposits, withdrawals, transfers, vault and staking moves |
 | `clearinghouseState` | `{user, dex?}` | current perp state, one call per perp dex (anchor) |
@@ -24,7 +26,9 @@ and the live API disagree, both are noted. "Observed" means seen on real wallets
 
 | data | docs say | observed |
 |---|---|---|
-| fills (`userFillsByTime`) | 2000 per response; "only the 10000 most recent fills are available" | Paged 14,000 fills back to the account's first trade (2026-04-14) on one wallet, so the 10k cap was not enforced there. Treat it as a risk for very active accounts: if it bites, early fills silently go missing. The scorer's fill-by-fill position check (below) would catch it. |
+| fills (`userFillsByTime`) | 2000 per response; "only the 10000 most recent fills are available" | Paged 14,000 fills back to the account's first trade (2026-04-14) on one wallet, so the 10k cap was not enforced there. Treat it as a risk for very active accounts: if it bites, early fills silently go missing. The `startPosition` check alone does not always catch it (`methodology.md` section 2). |
+| TWAP slices (`userTwapSliceFillsByTime`) | not stated | 2000 per response, paged by the nested `fill.time`. Old slices stop being served: on one wallet a TWAP started 2026-10-08 but nothing before 2026-10-13 came back, from any `startTime`. |
+| `twapHistory` | not stated | up to 2000 rows, newest first, no paging. Rows from 2025 had no `twapId`. |
 | `userFillsByTime` page order | not stated | ascending from `startTime`, API order within a millisecond is execution order |
 | funding (`userFunding`) | no limit stated | 500 per response, ascending. From `startTime: 0` it pages back to the account's first funding. |
 | ledger (`userNonFundingLedgerUpdates`) | no limit stated, no response schema documented | From `startTime: 0` returned the account's full history (back to first deposit). Rows within a response are **not** sorted by time. The fetcher pages on the max time seen and dedupes. |
@@ -82,8 +86,13 @@ feeToken, twapId`, plus `builderFee` when non-zero and `liquidation` on liquidat
   by both sides of a trade but does not name the other side.
 - `fee` includes `builderFee`. It can be negative (maker rebate). `feeToken` is usually USDC; spot
   buys can pay the fee in the base token.
-- `startPosition` is the position (perps) or token balance (spot) **before** the fill. This is the
-  most useful field for verification: it lets the scorer check its replay against HL fill by fill.
+- `startPosition` is the position (perps) or token balance (spot) **before** the fill. It lets the
+  scorer check its replay fill by fill, but only just before fills it has: it cannot show a
+  missing opening fill.
+- **TWAP slices are not in `userFillsByTime`.** They come only from `userTwapSliceFillsByTime`,
+  as `{fill, twapId}`. The nested fill has a zero `hash` and `twapId: null`; the order id is on
+  the wrapper. Found 2026-11-10 on four of the 21 wallets (139 to 2000+ slices each), after
+  phase0-v4 had treated their gaps as unexplained or as positions changing without an event.
 - Coin names: perps `BTC`; HIP-3 dex perps `xyz:XYZ100`; spot pairs `@107` or `PURR/USDC`.
 - `dir` values seen: `Open Long`, `Close Long`, `Open Short`, `Close Short`, `Buy`, `Sell`,
   `Spot Dust Conversion`.
@@ -121,13 +130,15 @@ based limits apply to actions only, not info requests.
   equity as a deposit at the next point. PnL before that point is attributed inside the window.
 - **HL samples sometimes repeat exactly** (same value to 6 decimals on consecutive days while the
   account holds positions). On the dormant Arena wallets, 54-57 of ~60 `allTime` samples repeat.
-- **Positions can change with no public event.** Two wallets had a fill whose `startPosition`
-  disagrees with every fill and ledger entry served (a 400,000 PONS long that vanished without a
-  closing fill; an `xyz:CRCL` position). Public data does not show what happened.
+- ~~Positions can change with no public event.~~ Wrong, withdrawn 2026-11-10. The two wallets
+  behind this claim (a 400,000 PONS long that "vanished", an `xyz:CRCL` position) had TWAP slices
+  the fetcher did not ask for. The PONS long was closed by a TWAP on 2026-11-04 19:37-19:47.
 - **Funding history is shorter and coarser than fills.** On one wallet `userFunding` from a
   September `startTime` returned nothing before 2026-10-09, while fills reach back to September.
   Older funding comes as daily aggregates (`delta.nSamples` up to 24). On that wallet HYPE and XMR
-  funding was missing for Oct 10-20 although both positions were open.
+  funding looked missing for Oct 10-20; in fact both positions were opened on Oct 21 by TWAPs
+  the fetcher had missed. Every open perp position gets an hourly funding row, which the scorer
+  now checks (`methodology.md` section 2).
 - `userAbstraction` can also return `"disabled"`. Treated like `default`.
 - A spot pair can go hours or a whole day without a trade, so there is no candle for it. Pricing
   falls back to the last earlier candle.
