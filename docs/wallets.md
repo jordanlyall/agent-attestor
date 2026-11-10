@@ -165,3 +165,6 @@ final `phase0-v2` code).
 **On `phase0-v3`** (commit `9243614`): two fresh clones again gave byte-identical `metrics.json` and
 `manifest.json` (`metricsHash a4a5dc68…`), and a live `verify` returned MATCH with 41 of 63 raw
 files changed.
+
+**On `phase0-v4`** (commit `a05cc74`): two fresh clones gave byte-identical `metrics.json` and
+`manifest.json` (`metricsHash 11bdd530…`).
