@@ -112,6 +112,26 @@ Per IP, 1200 weight per minute, shared by all REST requests.
 A 2000-fill page costs 120. The fetcher tracks weight and stays under 60% of the budget. Address-
 based limits apply to actions only, not info requests.
 
+## Found while running 21 wallets
+
+- **HL's portfolio counts vault equity and staked HYPE.** A vault deposit is not a flow to HL; the
+  vault's PnL is account PnL. Staked HYPE is valued in account value. Both are outside the trading
+  account the attestor scores, which explains 3 of the misses in `wallets.md`.
+- **`portfolio.allTime` opens with a placeholder worth 0**, then books the account's existing
+  equity as a deposit at the next point. PnL before that point is attributed inside the window.
+- **HL samples sometimes repeat exactly** (same value to 6 decimals on consecutive days while the
+  account holds positions). On the dormant Arena wallets, 54-57 of ~60 `allTime` samples repeat.
+- **Positions can change with no public event.** Two wallets had a fill whose `startPosition`
+  disagrees with every fill and ledger entry served (a 400,000 PONS long that vanished without a
+  closing fill; an `xyz:CRCL` position). Public data does not show what happened.
+- **Funding history is shorter and coarser than fills.** On one wallet `userFunding` from a
+  September `startTime` returned nothing before 2026-10-09, while fills reach back to September.
+  Older funding comes as daily aggregates (`delta.nSamples` up to 24). On that wallet HYPE and XMR
+  funding was missing for Oct 10-20 although both positions were open.
+- `userAbstraction` can also return `"disabled"`. Treated like `default`.
+- A spot pair can go hours or a whole day without a trade, so there is no candle for it. Pricing
+  falls back to the last earlier candle.
+
 ## Other observations
 
 - The API server clock ran ~4 hours ahead of this machine's local date (it was already 2026-11-10

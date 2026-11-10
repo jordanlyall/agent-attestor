@@ -1,4 +1,4 @@
-# Methodology (phase0-v1)
+# Methodology (phase0-v2)
 
 The scorer turns a snapshot of raw public API responses into metrics. It is a pure function: no
 network, no clock, no randomness. Every number is a `decimal.js` decimal (60 significant digits,
@@ -35,9 +35,11 @@ Cash is exact: it is a sum of decimal strings HL published. Positions are exact.
 one approximation** (section 3).
 
 **Fill-by-fill check.** Each fill carries HL's `startPosition` (perp size or spot balance before the
-fill). The scorer compares its replayed value with it on every fill and reports
-`integrity.positionMismatches`. Zero mismatches means the replay agrees with HL on every position
-and spot balance it can see.
+fill). The scorer compares its replayed value with it on every fill from the period start to the
+anchor (fills after the period also drive the walk back). A difference above 0.000001 means some
+position changed without a public event, so every earlier holding is wrong: scoring stops with an
+error. Smaller differences are rounding dust HL applies without an event; they are counted in
+`integrity.positionDust` and `positionMaxDust`.
 
 The fetcher refuses to anchor while events land within 5 s of the anchor time (it retries up to 6
 times), so the anchor and the event streams agree.
@@ -139,6 +141,14 @@ Tolerance, per wallet: the only inexact input is price. At each of the two endpo
 holding, HL's mark lies inside the traded range of the candle containing the sample time, so
 
     tol = sum over both endpoints and all holdings of |qty| * ((high - low) + 0.001 * close) + 0.01 USD
+
+HL's `allTime` series starts with a placeholder worth 0; the comparison starts at the first
+non-zero sample.
+
+The script also reports, without changing pass/fail: vault flows inside the window (HL counts vault
+PnL as account PnL), the effect of staked HYPE (`staked * HYPE price change`, valid when no staking
+moves happen in the window), the diff after both (`diffExOutside`), and how many HL samples exactly
+repeat the previous one.
 
 The 0.1% term covers the gap between last trade and HL's oracle-based mark. This bound grows with
 position size and volatility, which is what drives the price error. It does not absorb errors in
