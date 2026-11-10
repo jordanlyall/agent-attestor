@@ -209,5 +209,16 @@ cash or flows: if the replay missed a fee or a transfer, the miss shows.
   fill's `startPosition` disagrees.
 - A TWAP that started before the slice endpoint's retention cannot be scored, even when the
   missing slices are outside the period: the endpoint does not say which ones are gone.
+- **No completeness check for ordinary spot fills.** Perps have hourly funding rows to check
+  against; spot has no public per-hour record of balances. The only spot-inclusive check is the
+  comparison with HL's own account value samples (section 7), which is coarse and carries price
+  error. A missing spot fill outside a TWAP is caught only when a later spot fill's
+  `startPosition` disagrees.
+- **`borrowLend` is refused.** Options, none chosen: (a) keep refusing; (b) count lent tokens as
+  still held, which needs to know how `spotClearinghouseState` reports a supplied balance and
+  how interest accrues (undocumented; one wallet seen); (c) treat supply as an outflow and
+  withdrawal as an inflow, like a vault, and report interest as non-trading income. (c) is the
+  most honest with public data, but HL counts lent balances in account value, so the comparison
+  would miss the way vault wallets do.
 - `phase0-v1` to `v4` did not fetch TWAP slices. Their results are wrong for any account that
   used TWAPs.
