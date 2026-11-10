@@ -160,3 +160,7 @@ question.
 `verify` against the live API also returned MATCH on `0x838d…` on two separate refetches: new anchor
 each time, 37 and then 38 of 63 raw files changed, identical metrics hash (the second run on the
 final `phase0-v2` code).
+
+**On `phase0-v3`** (commit `9243614`): two fresh clones again gave byte-identical `metrics.json` and
+`manifest.json` (`metricsHash a4a5dc68…`), and a live `verify` returned MATCH with 41 of 63 raw
+files changed.
