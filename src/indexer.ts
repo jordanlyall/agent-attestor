@@ -144,6 +144,9 @@ export async function fetchSnapshot(opts: FetchOptions): Promise<string> {
   const spotState = JSON.parse(anchor.find((a) => a.file === "spotClearinghouseState.json")!.resp.text);
   for (const b of spotState.balances) tokens.add(b.coin);
   for (const l of ledger!) if (typeof l.delta.token === "string") tokens.add(l.delta.token);
+  // Staked HYPE sits outside the trading account, but HL counts it; price it for comparison.
+  const deleg = JSON.parse(anchor.find((a) => a.file === "delegatorSummary.json")!.resp.text);
+  if (deleg && Number(deleg.delegated) + Number(deleg.totalPendingWithdrawal) > 0) tokens.add("HYPE");
   for (const c of [...coins]) {
     const pair = spotMeta.universe.find((u) => u.name === c);
     if (pair) for (const ti of pair.tokens) tokens.add(spotMeta.tokens.find((t) => t.index === ti)!.name);

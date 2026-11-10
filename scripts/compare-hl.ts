@@ -69,8 +69,9 @@ export interface Comparison {
   ourEndValue: string;
   maxLevelDiff: string;
   vaultFlowsInWindow: string;
-  diffExVault: string;
-  passExVault: boolean;
+  stakedHypeEffect: string | null;
+  diffExOutside: string | null;
+  passExOutside: boolean | null;
   hlRepeatedSamples: number;
   ourFlows: string;
   vaultEquityAtAnchor: string;
@@ -113,6 +114,9 @@ export function compare(dir: string, preferred = "month"): Comparison {
     av = (series?.accountValueHistory ?? []).filter(([t]) => t >= from && t <= acc.anchorTime);
   }
   if (!series) throw new Error("portfolio has no usable window");
+  // HL's allTime series opens with a placeholder worth 0 and books the account's existing equity
+  // as a deposit at the next point. Start the comparison at HL's first real value.
+  while (av.length > 1 && new Decimal(av[0]![1]).isZero()) av = av.slice(1);
   const pnl = new Map(series.pnlHistory.map(([t, v]) => [t, v]));
   if (av.length < 2) throw new Error("fewer than 2 HL samples inside the snapshot");
   const px = samplePrice(acc);
@@ -138,7 +142,20 @@ export function compare(dir: string, preferred = "month"): Comparison {
   const hlPnl = new Decimal(pnl.get(last.t)!).minus(pnl.get(first.t)!);
   const tol = rangeBound(acc, first.h, first.t).plus(rangeBound(acc, last.h, last.t)).plus("0.01");
   const diff = ourPnl.minus(hlPnl);
-  const diffExVault = diff.plus(vaultFlows);
+  // HL also keeps staked HYPE inside account value. With no staking moves in the window, HL's
+  // extra PnL is staked * (HYPE price change). Staking rewards are not included (not public per
+  // period); they are small.
+  const stakingMoves = acc.events.some((e) => e.kind === "ledger" && e.type === "cStakingTransfer" && e.time > first.t && e.time <= last.t);
+  let stakedEffect: Decimal | null = ZERO;
+  if (stakingMoves) stakedEffect = null;
+  else if (!acc.extras.stakedHype.isZero()) {
+    try {
+      stakedEffect = acc.extras.stakedHype.times(px.tokenPrice("HYPE", last.t).minus(px.tokenPrice("HYPE", first.t)));
+    } catch {
+      stakedEffect = null; // snapshot has no HYPE candles
+    }
+  }
+  const diffExOutside = stakedEffect === null ? null : diff.plus(vaultFlows).plus(stakedEffect);
   const maxLevel = ours.reduce((m, x) => Decimal.max(m, x.ours.minus(x.hl).abs()), ZERO);
   return {
     address: acc.address,
@@ -158,8 +175,9 @@ export function compare(dir: string, preferred = "month"): Comparison {
     ourEndValue: fixed(last.ours, 2),
     maxLevelDiff: fixed(maxLevel, 2),
     vaultFlowsInWindow: fixed(vaultFlows, 2),
-    diffExVault: fixed(diffExVault, 2),
-    passExVault: diffExVault.abs().lte(tol),
+    stakedHypeEffect: stakedEffect === null ? null : fixed(stakedEffect, 2),
+    diffExOutside: diffExOutside === null ? null : fixed(diffExOutside, 2),
+    passExOutside: diffExOutside === null ? null : diffExOutside.abs().lte(tol),
     hlRepeatedSamples: frozen,
     ourFlows: fixed(flows, 2),
     vaultEquityAtAnchor: fixed(acc.extras.vaultEquityUsd, 2),
