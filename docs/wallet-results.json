@@ -3,26 +3,26 @@
     "address": "0x838d8e13ec1010e7851b3dc333699db885f2520c",
     "compare": {
       "address": "0x838d8e13ec1010e7851b3dc333699db885f2520c",
-      "diff": "-1284.83",
-      "diffExOutside": "-1284.83",
-      "end": "2026-11-10T04:08:16.363Z",
-      "hlEndValue": "802938.31",
-      "hlPnl": "-64669.42",
+      "diff": "5.13",
+      "diffExOutside": "5.13",
+      "end": "2026-11-10T01:54:00.051Z",
+      "hlEndValue": "810125.17",
+      "hlPnl": "-57482.56",
       "hlRepeatedSamples": 0,
       "hlStartValue": "867607.72",
       "maxLevelDiff": "29333.92",
       "mode": "unifiedAccount",
-      "ourEndValue": "802242.77",
+      "ourEndValue": "810719.59",
       "ourFlows": "0.00",
-      "ourPnl": "-65954.25",
+      "ourPnl": "-57477.43",
       "ourStartValue": "868197.02",
       "pass": true,
       "passExOutside": true,
-      "samples": 46,
+      "samples": 43,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-10T23:14:00.048Z",
-      "tolerance": "8418.18",
+      "tolerance": "11246.33",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "month"
@@ -58,17 +58,20 @@
       },
       "integrity": {
         "fills": 6558,
-        "fundingEvents": 243,
+        "fundingEvents": 230,
+        "fundingPositionChecks": 213,
         "ledgerEvents": 0,
         "positionChecks": 6558,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.0948949804",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -86,23 +89,195 @@
       "turnover": "71.7353254196",
       "twrNet": "-0.0460970916"
     },
-    "metricsHash": "11bdd5305ca5324594ec1ac3d452a59e7b1e6bf413857c6bbe9e2e0102d5714f",
+    "metricsHash": "0f65cd9b4625093edc32062c1f31279844670964022b781cf97047d2fa087a06",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
   {
     "address": "0xef2ac5c3952a6917396e3a63eac93f4e2c692b42",
-    "error": "UnsupportedError: replay disagrees with HL at 2026-10-10T10:02:29.937Z xyz:CRCL: replay 683.316, HL startPosition -138.229. A position changed without a public fill.",
+    "compare": {
+      "address": "0xef2ac5c3952a6917396e3a63eac93f4e2c692b42",
+      "diff": "59.04",
+      "diffExOutside": "59.04",
+      "end": "2026-11-10T10:07:13.894Z",
+      "hlEndValue": "98923.57",
+      "hlPnl": "12816.11",
+      "hlRepeatedSamples": 0,
+      "hlStartValue": "86107.45",
+      "maxLevelDiff": "1723.70",
+      "mode": "unifiedAccount",
+      "ourEndValue": "99041.99",
+      "ourFlows": "0.00",
+      "ourPnl": "12875.15",
+      "ourStartValue": "86166.83",
+      "pass": true,
+      "passExOutside": true,
+      "samples": 46,
+      "stakedHypeAtAnchor": "0.0000",
+      "stakedHypeEffect": "0.00",
+      "start": "2026-10-10T23:20:00.044Z",
+      "tolerance": "655.54",
+      "vaultEquityAtAnchor": "0.00",
+      "vaultFlowsInWindow": "0.00",
+      "window": "month"
+    },
     "from": "2026-10-10",
     "label": "leaderboard sample",
+    "metrics": {
+      "accountMode": "unifiedAccount",
+      "address": "0xef2ac5c3952a6917396e3a63eac93f4e2c692b42",
+      "equity": {
+        "averageDaily": "89598.506135",
+        "end": "99485.755930",
+        "start": "84963.697325"
+      },
+      "externalFlows": {
+        "deposits": "0.000000",
+        "net": "0.000000",
+        "nonTrading": "0.000000",
+        "other": "0.000000",
+        "staking": "0.000000",
+        "transfersIn": "0.000000",
+        "transfersOut": "0.000000",
+        "vault": "0.000000",
+        "withdrawals": "0.000000"
+      },
+      "feesPaid": {
+        "shareOfStartEquity": "0.0151956546",
+        "usd": "1291.078994"
+      },
+      "fundingNet": {
+        "shareOfStartEquity": "-0.0032055954",
+        "usd": "-272.359238"
+      },
+      "integrity": {
+        "fills": 6688,
+        "fundingEvents": 506,
+        "fundingPositionChecks": 454,
+        "ledgerEvents": 0,
+        "positionChecks": 6773,
+        "positionDust": 0,
+        "positionMaxDust": "0.000000000000",
+        "staleIntradayPrices": 0,
+        "staleMarks": 14,
+        "twapOrders": 108,
+        "twapSlices": 5020
+      },
+      "maxDrawdown": "0.1255381474",
+      "meetsMinimums": true,
+      "methodology": "phase0-v5",
+      "nonTradingIncome": {
+        "usd": "0.000000"
+      },
+      "notionalTraded": "3523721.459519",
+      "observations": 31,
+      "operatorCohort": null,
+      "period": {
+        "days": 31,
+        "from": "2026-10-10",
+        "to": "2026-11-10"
+      },
+      "pnlNet": "14522.058605",
+      "sharpe": "2.8989629797",
+      "sortino": "4.6811466778",
+      "turnover": "39.3279041308",
+      "twrNet": "0.1709207469"
+    },
+    "metricsHash": "0066e3e74d3e5f0639d1f77fdad08f58389de50c956e987a5841ee653a983452",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
   {
     "address": "0x2888be6982957103ea88ac10f4179df0a294e877",
-    "error": "UnsupportedError: replay disagrees with HL at 2026-11-04T09:01:06.979Z PONS: replay -400000, HL startPosition 0. A position changed without a public fill.",
+    "compare": {
+      "address": "0x2888be6982957103ea88ac10f4179df0a294e877",
+      "diff": "168.76",
+      "diffExOutside": "168.76",
+      "end": "2026-11-10T10:09:22.274Z",
+      "hlEndValue": "279071.85",
+      "hlPnl": "8997.26",
+      "hlRepeatedSamples": 0,
+      "hlStartValue": "284833.59",
+      "maxLevelDiff": "8447.61",
+      "mode": "unifiedAccount",
+      "ourEndValue": "279120.60",
+      "ourFlows": "-14759.00",
+      "ourPnl": "9166.01",
+      "ourStartValue": "284713.58",
+      "pass": true,
+      "passExOutside": true,
+      "samples": 46,
+      "stakedHypeAtAnchor": "0.0000",
+      "stakedHypeEffect": "0.00",
+      "start": "2026-10-10T23:52:00.076Z",
+      "tolerance": "573.32",
+      "vaultEquityAtAnchor": "0.00",
+      "vaultFlowsInWindow": "0.00",
+      "window": "month"
+    },
     "from": "2026-10-10",
     "label": "leaderboard sample",
+    "metrics": {
+      "accountMode": "unifiedAccount",
+      "address": "0x2888be6982957103ea88ac10f4179df0a294e877",
+      "equity": {
+        "averageDaily": "270744.573302",
+        "end": "278785.584387",
+        "start": "286103.249096"
+      },
+      "externalFlows": {
+        "deposits": "0.000000",
+        "net": "-14759.001567",
+        "nonTrading": "0.000000",
+        "other": "0.000000",
+        "staking": "0.000000",
+        "transfersIn": "0.000000",
+        "transfersOut": "-14759.001567",
+        "vault": "0.000000",
+        "withdrawals": "0.000000"
+      },
+      "feesPaid": {
+        "shareOfStartEquity": "0.0065013076",
+        "usd": "1860.045237"
+      },
+      "fundingNet": {
+        "shareOfStartEquity": "-0.0058602086",
+        "usd": "-1676.624717"
+      },
+      "integrity": {
+        "fills": 1010,
+        "fundingEvents": 161,
+        "fundingPositionChecks": 162,
+        "ledgerEvents": 1,
+        "positionChecks": 1010,
+        "positionDust": 10,
+        "positionMaxDust": "0.000000200000",
+        "staleIntradayPrices": 0,
+        "staleMarks": 0,
+        "twapOrders": 2,
+        "twapSlices": 371
+      },
+      "maxDrawdown": "0.0712914729",
+      "meetsMinimums": true,
+      "methodology": "phase0-v5",
+      "nonTradingIncome": {
+        "usd": "0.000000"
+      },
+      "notionalTraded": "3981017.548638",
+      "observations": 31,
+      "operatorCohort": null,
+      "period": {
+        "days": 31,
+        "from": "2026-10-10",
+        "to": "2026-11-10"
+      },
+      "pnlNet": "7441.336858",
+      "sharpe": "0.8474442860",
+      "sortino": "2.2867015700",
+      "turnover": "14.7039606375",
+      "twrNet": "0.0299839005"
+    },
+    "metricsHash": "c9ac21b13f3cea7d272d725c72460121e40fd5f29763ed4e63786c9febeefeb4",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -110,26 +285,26 @@
     "address": "0x085d2ac5a2ab89191feea50b5557d5d9cd7a3e88",
     "compare": {
       "address": "0x085d2ac5a2ab89191feea50b5557d5d9cd7a3e88",
-      "diff": "30573.08",
-      "diffExOutside": "486.41",
-      "end": "2026-11-10T00:46:00.052Z",
-      "hlEndValue": "247806.35",
-      "hlPnl": "-17997.04",
+      "diff": "30121.89",
+      "diffExOutside": "35.22",
+      "end": "2026-11-10T09:26:00.031Z",
+      "hlEndValue": "246232.61",
+      "hlPnl": "-19570.79",
       "hlRepeatedSamples": 0,
       "hlStartValue": "294892.20",
       "maxLevelDiff": "281615.11",
       "mode": "unifiedAccount",
-      "ourEndValue": "249025.87",
+      "ourEndValue": "247000.93",
       "ourFlows": "-59175.53",
-      "ourPnl": "12576.04",
+      "ourPnl": "10551.10",
       "ourStartValue": "295625.36",
       "pass": false,
       "passExOutside": true,
-      "samples": 45,
+      "samples": 46,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-10T22:06:00.047Z",
-      "tolerance": "3801.04",
+      "tolerance": "3702.60",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "-30086.67",
       "window": "month"
@@ -166,16 +341,19 @@
       "integrity": {
         "fills": 2732,
         "fundingEvents": 28,
+        "fundingPositionChecks": 24,
         "ledgerEvents": 22,
         "positionChecks": 2732,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.1472316045",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -193,7 +371,7 @@
       "turnover": "41.8630237022",
       "twrNet": "-0.0473754718"
     },
-    "metricsHash": "1a5717ac0a28286fb9d41ea4bd807f7f6e0e4e5b9826821853fad81551996476",
+    "metricsHash": "8bf5cd8af32eab521550d1eec2441d4bbaad74bda17e4a695c2df905537688d0",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -201,18 +379,18 @@
     "address": "0x65c6b7f0e9a6f72b351ca133e510a2329d047dbe",
     "compare": {
       "address": "0x65c6b7f0e9a6f72b351ca133e510a2329d047dbe",
-      "diff": "-2298.69",
-      "diffExOutside": "-2298.69",
-      "end": "2026-11-10T04:24:29.779Z",
-      "hlEndValue": "141300.40",
-      "hlPnl": "-62798.21",
+      "diff": "-536.47",
+      "diffExOutside": "-536.47",
+      "end": "2026-11-10T09:38:00.058Z",
+      "hlEndValue": "141172.56",
+      "hlPnl": "-62926.05",
       "hlRepeatedSamples": 0,
       "hlStartValue": "204098.61",
       "maxLevelDiff": "6463.29",
       "mode": "default",
-      "ourEndValue": "140179.24",
+      "ourEndValue": "141813.61",
       "ourFlows": "0.00",
-      "ourPnl": "-65096.90",
+      "ourPnl": "-63462.52",
       "ourStartValue": "205276.13",
       "pass": true,
       "passExOutside": true,
@@ -220,7 +398,7 @@
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-10T23:58:00.051Z",
-      "tolerance": "4776.80",
+      "tolerance": "5018.60",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "month"
@@ -257,16 +435,19 @@
       "integrity": {
         "fills": 1191,
         "fundingEvents": 1847,
+        "fundingPositionChecks": 1681,
         "ledgerEvents": 0,
         "positionChecks": 1191,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.3706636633",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -284,7 +465,7 @@
       "turnover": "30.3600522745",
       "twrNet": "-0.2507264370"
     },
-    "metricsHash": "36357f5f7e7cca03f47d101378e2c72da7ff94d9dc05a2a8dbfd27984fe49e06",
+    "metricsHash": "941216853bb1968cea8dc6b3ba99b89b1621376968a2218398495420886de6cd",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -298,92 +479,9 @@
   },
   {
     "address": "0x51a4cee5e31cc8f3bef1564b7a2d0005e2775a98",
-    "compare": {
-      "address": "0x51a4cee5e31cc8f3bef1564b7a2d0005e2775a98",
-      "diff": "-18974.97",
-      "diffExOutside": "-18974.97",
-      "end": "2026-11-10T04:27:33.530Z",
-      "hlEndValue": "373089.29",
-      "hlPnl": "-150647.06",
-      "hlRepeatedSamples": 0,
-      "hlStartValue": "523736.35",
-      "maxLevelDiff": "17069.88",
-      "mode": "unifiedAccount",
-      "ourEndValue": "371184.20",
-      "ourFlows": "0.00",
-      "ourPnl": "-169622.03",
-      "ourStartValue": "540806.22",
-      "pass": false,
-      "passExOutside": false,
-      "samples": 46,
-      "stakedHypeAtAnchor": "0.0000",
-      "stakedHypeEffect": "0.00",
-      "start": "2026-10-10T23:20:00.044Z",
-      "tolerance": "6350.60",
-      "vaultEquityAtAnchor": "0.00",
-      "vaultFlowsInWindow": "0.00",
-      "window": "month"
-    },
+    "error": "UnsupportedError: TWAP 2297432 on @107 (started 2026-10-08T16:54:12.792Z) executed 4475.18 but HL serves slices for only 807.22. Its early slices are no longer public, so holdings before them cannot be rebuilt.",
     "from": "2026-10-10",
     "label": "leaderboard sample",
-    "metrics": {
-      "accountMode": "unifiedAccount",
-      "address": "0x51a4cee5e31cc8f3bef1564b7a2d0005e2775a98",
-      "equity": {
-        "averageDaily": "480721.425306",
-        "end": "377060.467279",
-        "start": "522462.353595"
-      },
-      "externalFlows": {
-        "deposits": "0.000000",
-        "net": "0.000000",
-        "nonTrading": "0.000000",
-        "other": "0.000000",
-        "staking": "0.000000",
-        "transfersIn": "0.000000",
-        "transfersOut": "0.000000",
-        "vault": "0.000000",
-        "withdrawals": "0.000000"
-      },
-      "feesPaid": {
-        "shareOfStartEquity": "0.0048629929",
-        "usd": "2540.730718"
-      },
-      "fundingNet": {
-        "shareOfStartEquity": "-0.0092280338",
-        "usd": "-4821.300253"
-      },
-      "integrity": {
-        "fills": 1319,
-        "fundingEvents": 344,
-        "ledgerEvents": 0,
-        "positionChecks": 1319,
-        "positionDust": 0,
-        "positionMaxDust": "0.000000000000",
-        "staleIntradayPrices": 0,
-        "staleMarks": 0
-      },
-      "maxDrawdown": "0.3198661554",
-      "meetsMinimums": true,
-      "methodology": "phase0-v4",
-      "nonTradingIncome": {
-        "usd": "0.000000"
-      },
-      "notionalTraded": "5797067.256540",
-      "observations": 31,
-      "operatorCohort": null,
-      "period": {
-        "days": 31,
-        "from": "2026-10-10",
-        "to": "2026-11-10"
-      },
-      "pnlNet": "-145401.886316",
-      "sharpe": "-5.1743088069",
-      "sortino": "-5.6513145501",
-      "turnover": "12.0590989945",
-      "twrNet": "-0.2783011739"
-    },
-    "metricsHash": "8f69b9b36124c356cc5014c2ce4dee7bfa7f826727b561e6d6d381f48c023de6",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -391,26 +489,26 @@
     "address": "0x3364f3e9f19436983c9a65a54f81c54a6af2a6f4",
     "compare": {
       "address": "0x3364f3e9f19436983c9a65a54f81c54a6af2a6f4",
-      "diff": "8628.96",
-      "diffExOutside": "-3623.98",
-      "end": "2026-11-10T04:28:36.925Z",
-      "hlEndValue": "567305.06",
-      "hlPnl": "-23833.30",
+      "diff": "11331.32",
+      "diffExOutside": "-594.81",
+      "end": "2026-11-10T03:06:00.005Z",
+      "hlEndValue": "568904.59",
+      "hlPnl": "-22233.78",
       "hlRepeatedSamples": 0,
       "hlStartValue": "511378.48",
       "maxLevelDiff": "95591.65",
       "mode": "unifiedAccount",
-      "ourEndValue": "486602.34",
+      "ourEndValue": "490904.22",
       "ourFlows": "79760.06",
-      "ourPnl": "-15204.35",
+      "ourPnl": "-10902.46",
       "ourStartValue": "422046.63",
       "pass": false,
       "passExOutside": true,
-      "samples": 46,
+      "samples": 45,
       "stakedHypeAtAnchor": "1057.6555",
-      "stakedHypeEffect": "-12252.94",
+      "stakedHypeEffect": "-11926.12",
       "start": "2026-10-10T23:26:00.042Z",
-      "tolerance": "7869.28",
+      "tolerance": "10608.16",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "month"
@@ -447,16 +545,19 @@
       "integrity": {
         "fills": 1861,
         "fundingEvents": 506,
+        "fundingPositionChecks": 447,
         "ledgerEvents": 6,
         "positionChecks": 1862,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 15,
-        "staleMarks": 40
+        "staleMarks": 40,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.1500075393",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -474,7 +575,7 @@
       "turnover": "10.6911662457",
       "twrNet": "-0.0084051347"
     },
-    "metricsHash": "a5ccfd17fb2af5b2d485935567d6bbab5fad3e8613b4719464b446cdd4b17b5c",
+    "metricsHash": "4f35fe786fdbddb60b2d31b2117c04d69c5fede924fb84a9a422c371829093da",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -482,26 +583,26 @@
     "address": "0x25497a776b4ef14f83c664509e905ccb387c9741",
     "compare": {
       "address": "0x25497a776b4ef14f83c664509e905ccb387c9741",
-      "diff": "-1506.57",
-      "diffExOutside": "-1506.57",
-      "end": "2026-11-10T02:48:00.068Z",
-      "hlEndValue": "163967.00",
-      "hlPnl": "21678.57",
+      "diff": "1037.42",
+      "diffExOutside": "1037.42",
+      "end": "2026-11-10T10:17:52.801Z",
+      "hlEndValue": "164060.47",
+      "hlPnl": "21772.03",
       "hlRepeatedSamples": 0,
       "hlStartValue": "112288.64",
       "maxLevelDiff": "7342.01",
       "mode": "unifiedAccount",
-      "ourEndValue": "162477.02",
+      "ourEndValue": "165114.46",
       "ourFlows": "29999.80",
-      "ourPnl": "20172.00",
+      "ourPnl": "22809.45",
       "ourStartValue": "112305.21",
       "pass": true,
       "passExOutside": true,
-      "samples": 45,
+      "samples": 46,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-10T22:48:00.031Z",
-      "tolerance": "3395.37",
+      "tolerance": "2303.29",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "month"
@@ -538,16 +639,19 @@
       "integrity": {
         "fills": 1038,
         "fundingEvents": 520,
+        "fundingPositionChecks": 493,
         "ledgerEvents": 1,
         "positionChecks": 1038,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.3690923990",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -565,7 +669,7 @@
       "turnover": "23.6543677834",
       "twrNet": "0.0949783111"
     },
-    "metricsHash": "bdb850b626d04b0897d95a69a38253c33ac3833dd2538ade701d813257678e03",
+    "metricsHash": "6e9f92918cba868700a16306ee2438d4f8bbb2eb5122520c8eff51aacc4e4e6b",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -629,16 +733,19 @@
       "integrity": {
         "fills": 65,
         "fundingEvents": 10,
+        "fundingPositionChecks": 10,
         "ledgerEvents": 0,
         "positionChecks": 65,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.0000003420",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -656,7 +763,7 @@
       "turnover": "7.0719476829",
       "twrNet": "0.0366914444"
     },
-    "metricsHash": "c54612cb7f8bd753a1916e9b1ce373e4258098918d8f0bcc91977b5fe496dda2",
+    "metricsHash": "2a4bcaca1bd28f1850089b9fb1af097a8a3b9f487a32bc9d99dd5abf28b187b5",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -664,26 +771,26 @@
     "address": "0xcb30bc4a1175de202eb579c1e506e9277237d694",
     "compare": {
       "address": "0xcb30bc4a1175de202eb579c1e506e9277237d694",
-      "diff": "4652.58",
-      "diffExOutside": "4652.58",
-      "end": "2026-11-09T20:58:00.048Z",
+      "diff": "10.00",
+      "diffExOutside": "10.00",
+      "end": "2026-11-10T10:02:59.894Z",
       "hlEndValue": "93175.81",
       "hlPnl": "-3336.71",
-      "hlRepeatedSamples": 15,
+      "hlRepeatedSamples": 17,
       "hlStartValue": "96512.51",
-      "maxLevelDiff": "4652.58",
+      "maxLevelDiff": "2039.55",
       "mode": "unifiedAccount",
       "ourEndValue": "93175.81",
       "ourFlows": "0.00",
-      "ourPnl": "1315.87",
-      "ourStartValue": "91859.93",
-      "pass": false,
-      "passExOutside": false,
-      "samples": 43,
+      "ourPnl": "-3326.71",
+      "ourStartValue": "96502.51",
+      "pass": true,
+      "passExOutside": true,
+      "samples": 45,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-10T23:58:00.051Z",
-      "tolerance": "700.96",
+      "tolerance": "82.24",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "month"
@@ -694,9 +801,9 @@
       "accountMode": "unifiedAccount",
       "address": "0xcb30bc4a1175de202eb579c1e506e9277237d694",
       "equity": {
-        "averageDaily": "94991.126382",
+        "averageDaily": "96146.390910",
         "end": "93175.805729",
-        "start": "91065.781339"
+        "start": "96615.361748"
       },
       "externalFlows": {
         "deposits": "0.000000",
@@ -710,30 +817,33 @@
         "withdrawals": "0.000000"
       },
       "feesPaid": {
-        "shareOfStartEquity": "0.0047103701",
-        "usd": "428.953536"
+        "shareOfStartEquity": "0.0048847382",
+        "usd": "471.940745"
       },
       "fundingNet": {
-        "shareOfStartEquity": "-0.0044715351",
+        "shareOfStartEquity": "-0.0042146904",
         "usd": "-407.203834"
       },
       "integrity": {
-        "fills": 705,
+        "fills": 844,
         "fundingEvents": 83,
+        "fundingPositionChecks": 53,
         "ledgerEvents": 0,
-        "positionChecks": 705,
+        "positionChecks": 844,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 2,
+        "twapSlices": 139
       },
       "maxDrawdown": "0.0702968049",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
-      "notionalTraded": "1631672.603800",
+      "notionalTraded": "1731180.197000",
       "observations": 31,
       "operatorCohort": null,
       "period": {
@@ -741,13 +851,13 @@
         "from": "2026-10-10",
         "to": "2026-11-10"
       },
-      "pnlNet": "2110.024390",
-      "sharpe": "0.9093854679",
-      "sortino": "1.2575857337",
-      "turnover": "17.1771055461",
-      "twrNet": "0.0231703320"
+      "pnlNet": "-3439.556019",
+      "sharpe": "-1.2507886900",
+      "sortino": "-1.6954867326",
+      "turnover": "18.0056701100",
+      "twrNet": "-0.0356005086"
     },
-    "metricsHash": "6221c51e8069682454240ec4fa14c48b69f07d55cb6ca3341bd0c3d707c03021",
+    "metricsHash": "4c1c40ff9fa1fe2cf1b31bbf1025ee7e07b410044b5fe27261b64064e7dcfe94",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -755,26 +865,26 @@
     "address": "0x1f2becbf9d58411f4b7100c06adf985b742992ff",
     "compare": {
       "address": "0x1f2becbf9d58411f4b7100c06adf985b742992ff",
-      "diff": "208.02",
-      "diffExOutside": "208.02",
-      "end": "2026-11-10T04:32:51.578Z",
-      "hlEndValue": "12451.47",
-      "hlPnl": "-8679.52",
+      "diff": "-709.98",
+      "diffExOutside": "-709.98",
+      "end": "2026-11-10T10:19:58.973Z",
+      "hlEndValue": "9157.27",
+      "hlPnl": "-11973.72",
       "hlRepeatedSamples": 5,
       "hlStartValue": "0.00",
       "maxLevelDiff": "12690.85",
       "mode": "unifiedAccount",
-      "ourEndValue": "12659.47",
+      "ourEndValue": "8447.27",
       "ourFlows": "21130.97",
-      "ourPnl": "-8471.50",
+      "ourPnl": "-12683.70",
       "ourStartValue": "0.00",
       "pass": true,
       "passExOutside": true,
-      "samples": 59,
+      "samples": 61,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-10T23:52:00.076Z",
-      "tolerance": "1037.55",
+      "tolerance": "2108.74",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "month"
@@ -811,16 +921,19 @@
       "integrity": {
         "fills": 1109,
         "fundingEvents": 465,
+        "fundingPositionChecks": 469,
         "ledgerEvents": 14,
         "positionChecks": 1109,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.8727520337",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -838,7 +951,7 @@
       "turnover": "1159.1829620776",
       "twrNet": "-0.7309511960"
     },
-    "metricsHash": "6c80b7cbe3ba8a9407985e78dbca4de7ecf3057e2083ddbaa487b6822d3077a4",
+    "metricsHash": "38218d1d8cc482a6a0a806d3901ce143377e16d6c53b7e8465cb45c81f99e622",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -846,18 +959,18 @@
     "address": "0xdb951b52356ebf874676950a5045b469783bbb49",
     "compare": {
       "address": "0xdb951b52356ebf874676950a5045b469783bbb49",
-      "diff": "-1502.56",
-      "diffExOutside": "-1502.56",
-      "end": "2026-11-10T04:33:53.768Z",
-      "hlEndValue": "20596.62",
-      "hlPnl": "-175990.29",
+      "diff": "-1499.25",
+      "diffExOutside": "-1499.25",
+      "end": "2026-11-10T10:21:02.090Z",
+      "hlEndValue": "20589.79",
+      "hlPnl": "-175997.11",
       "hlRepeatedSamples": 0,
       "hlStartValue": "246586.91",
       "maxLevelDiff": "8038.08",
       "mode": "unifiedAccount",
-      "ourEndValue": "20592.42",
+      "ourEndValue": "20588.90",
       "ourFlows": "-50000.00",
-      "ourPnl": "-177492.85",
+      "ourPnl": "-177496.36",
       "ourStartValue": "248085.27",
       "pass": true,
       "passExOutside": true,
@@ -865,7 +978,7 @@
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-10T22:48:00.031Z",
-      "tolerance": "4283.58",
+      "tolerance": "4284.60",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "month"
@@ -902,16 +1015,19 @@
       "integrity": {
         "fills": 1388,
         "fundingEvents": 431,
+        "fundingPositionChecks": 294,
         "ledgerEvents": 1,
         "positionChecks": 1388,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.7260179940",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -929,7 +1045,7 @@
       "turnover": "19.3442196265",
       "twrNet": "-0.7080227476"
     },
-    "metricsHash": "6727290fc945c2b22a58d5813b77ede1d16c4a4af9384c2cddd386c8e88f8c04",
+    "metricsHash": "b2d695ccfb507c0bdbfd7a1ea885c3ab8da1ccf9aa346357701d5a76fbf559a1",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -937,11 +1053,11 @@
     "address": "0x9d1cceaf823143f8223dbca55102b4964cd5301a",
     "compare": {
       "address": "0x9d1cceaf823143f8223dbca55102b4964cd5301a",
-      "diff": "109.67",
-      "diffExOutside": "-1.82",
-      "end": "2026-11-10T01:34:00.041Z",
-      "hlEndValue": "790.63",
-      "hlPnl": "-109.67",
+      "diff": "118.67",
+      "diffExOutside": "2.16",
+      "end": "2026-11-10T10:23:05.014Z",
+      "hlEndValue": "781.63",
+      "hlPnl": "-118.67",
       "hlRepeatedSamples": 0,
       "hlStartValue": "900.33",
       "maxLevelDiff": "949.18",
@@ -952,9 +1068,9 @@
       "ourStartValue": "0.01",
       "pass": false,
       "passExOutside": false,
-      "samples": 46,
+      "samples": 48,
       "stakedHypeAtAnchor": "10.5743",
-      "stakedHypeEffect": "-111.50",
+      "stakedHypeEffect": "-116.51",
       "start": "2026-10-10T23:34:00.059Z",
       "tolerance": "0.01",
       "vaultEquityAtAnchor": "0.00",
@@ -993,16 +1109,19 @@
       "integrity": {
         "fills": 0,
         "fundingEvents": 0,
+        "fundingPositionChecks": 0,
         "ledgerEvents": 36,
         "positionChecks": 0,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.0000000000",
       "meetsMinimums": false,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1020,7 +1139,7 @@
       "turnover": "0.0000000000",
       "twrNet": "0.0000000000"
     },
-    "metricsHash": "a81651b882e0c62bdbcc21b3ff8c5280093f10ad4c08294cb44490055fb7c614",
+    "metricsHash": "ef6932e4fd2ba4ae3c582b86c22cd03949ea83e412b9c1d84d8754dad041f894",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -1030,10 +1149,10 @@
       "address": "0x0b554de848ccc7a771f2ffc0bb8de99c5d7bc9c1",
       "diff": "0.01",
       "diffExOutside": "0.01",
-      "end": "2026-11-10T04:35:58.715Z",
+      "end": "2026-11-10T10:23:09.922Z",
       "hlEndValue": "29488.33",
       "hlPnl": "4538.90",
-      "hlRepeatedSamples": 22,
+      "hlRepeatedSamples": 23,
       "hlStartValue": "0.00",
       "maxLevelDiff": "1390.60",
       "mode": "unifiedAccount",
@@ -1043,7 +1162,7 @@
       "ourStartValue": "0.00",
       "pass": false,
       "passExOutside": false,
-      "samples": 33,
+      "samples": 34,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2026-10-22T22:46:00.045Z",
@@ -1084,16 +1203,19 @@
       "integrity": {
         "fills": 1238,
         "fundingEvents": 63,
+        "fundingPositionChecks": 59,
         "ledgerEvents": 7,
         "positionChecks": 1238,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.0294634969",
       "meetsMinimums": true,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1111,7 +1233,7 @@
       "turnover": "1495.9999544828",
       "twrNet": "0.2667315702"
     },
-    "metricsHash": "13510a8d8bbfbe7a6eeb005dc92fe9711dae5a0c1b5492a1b647370d38fbdccb",
+    "metricsHash": "73511ad41c1837380839fd1abc8be9a2d92be1c1c14a611405d358cbba7c32d3",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -1121,10 +1243,10 @@
       "address": "0xc20ac4dc4188660cbf555448af52694ca62b0734",
       "diff": "-1111.71",
       "diffExOutside": "-1111.71",
-      "end": "2026-11-08T17:14:00.039Z",
+      "end": "2026-11-10T10:24:12.030Z",
       "hlEndValue": "220.40",
       "hlPnl": "-4261.37",
-      "hlRepeatedSamples": 56,
+      "hlRepeatedSamples": 57,
       "hlStartValue": "9804.77",
       "maxLevelDiff": "1111.71",
       "mode": "default",
@@ -1134,7 +1256,7 @@
       "ourStartValue": "10916.48",
       "pass": true,
       "passExOutside": true,
-      "samples": 59,
+      "samples": 60,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2025-10-22T22:14:00.015Z",
@@ -1175,16 +1297,19 @@
       "integrity": {
         "fills": 291,
         "fundingEvents": 1056,
+        "fundingPositionChecks": 1108,
         "ledgerEvents": 4,
         "positionChecks": 378,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.4993156166",
       "meetsMinimums": false,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1202,7 +1327,7 @@
       "turnover": "133.8789141174",
       "twrNet": "0.1202556402"
     },
-    "metricsHash": "a61bf58599efc42bcc05cb2c0b2839aae373840624b70f225c5981af77723220",
+    "metricsHash": "a302ab127e8b84036871ae24c820d93229a8ffad866503e3ce9c64eebc2910ad",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1212,7 +1337,7 @@
       "address": "0x7a8fd8bba33e37361ca6b0cb4518a44681bad2f3",
       "diff": "-1340.64",
       "diffExOutside": "-1340.64",
-      "end": "2026-11-10T04:37:07.965Z",
+      "end": "2026-11-10T10:25:17.902Z",
       "hlEndValue": "100.58",
       "hlPnl": "-614.83",
       "hlRepeatedSamples": 57,
@@ -1266,16 +1391,19 @@
       "integrity": {
         "fills": 419,
         "fundingEvents": 186,
+        "fundingPositionChecks": 187,
         "ledgerEvents": 6,
         "positionChecks": 478,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.4045370983",
       "meetsMinimums": false,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1293,7 +1421,7 @@
       "turnover": "326.6195290802",
       "twrNet": "0.2782386315"
     },
-    "metricsHash": "380029bc356ebb48d11d686e17e0883e75839aae9f5da22c2f745a9fb27a0e5d",
+    "metricsHash": "0ab9a8375f00188d04d0eaac4294eed85f52f359fa70840a0ed23040aa51a438",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1301,26 +1429,26 @@
     "address": "0x56d652e62998251b56c8398fb11fcfe464c08f84",
     "compare": {
       "address": "0x56d652e62998251b56c8398fb11fcfe464c08f84",
-      "diff": "253.81",
-      "diffExOutside": "253.81",
-      "end": "2026-11-08T15:02:00.039Z",
-      "hlEndValue": "74.16",
-      "hlPnl": "-3487.46",
+      "diff": "253.84",
+      "diffExOutside": "253.84",
+      "end": "2026-11-10T10:26:21.340Z",
+      "hlEndValue": "73.94",
+      "hlPnl": "-3487.67",
       "hlRepeatedSamples": 0,
       "hlStartValue": "8599.61",
       "maxLevelDiff": "960.75",
       "mode": "default",
-      "ourEndValue": "74.16",
+      "ourEndValue": "73.97",
       "ourFlows": "-5038.00",
-      "ourPnl": "-3233.64",
+      "ourPnl": "-3233.83",
       "ourStartValue": "8345.80",
       "pass": true,
       "passExOutside": true,
-      "samples": 59,
+      "samples": 60,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2025-10-22T22:02:00.101Z",
-      "tolerance": "2748.98",
+      "tolerance": "2748.97",
       "vaultEquityAtAnchor": "0.00",
       "vaultFlowsInWindow": "0.00",
       "window": "allTime"
@@ -1357,16 +1485,19 @@
       "integrity": {
         "fills": 306,
         "fundingEvents": 102,
+        "fundingPositionChecks": 236,
         "ledgerEvents": 9,
         "positionChecks": 386,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.5760191433",
       "meetsMinimums": false,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1384,7 +1515,7 @@
       "turnover": "106.3195771253",
       "twrNet": "-0.4389065905"
     },
-    "metricsHash": "f6cc781e681dde8705694597cb4a75157d6e5a1682e5e6ff962c335e360202ce",
+    "metricsHash": "5d5f0ae37f0273752fe0f89f1958d84e0aee30a13f71dedfca5cdee940bb4b8e",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1394,10 +1525,10 @@
       "address": "0x67293d914eafb26878534571add81f6bd2d9fe06",
       "diff": "261.73",
       "diffExOutside": "261.73",
-      "end": "2026-11-08T15:30:00.034Z",
+      "end": "2026-11-10T10:28:26.079Z",
       "hlEndValue": "91.90",
       "hlPnl": "1075.05",
-      "hlRepeatedSamples": 55,
+      "hlRepeatedSamples": 56,
       "hlStartValue": "3280.85",
       "maxLevelDiff": "261.73",
       "mode": "default",
@@ -1407,7 +1538,7 @@
       "ourStartValue": "3019.11",
       "pass": true,
       "passExOutside": true,
-      "samples": 59,
+      "samples": 60,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2025-10-22T23:50:00.023Z",
@@ -1448,16 +1579,19 @@
       "integrity": {
         "fills": 661,
         "fundingEvents": 648,
+        "fundingPositionChecks": 728,
         "ledgerEvents": 3,
         "positionChecks": 760,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.7781247253",
       "meetsMinimums": false,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1475,7 +1609,7 @@
       "turnover": "333.3750187150",
       "twrNet": "-0.6597179065"
     },
-    "metricsHash": "886e59d1a52a43b91222aed3a884556d8a72ab44254bd6e1cfb51b616338ada5",
+    "metricsHash": "fe9263d03e2e344f509583a58a8f893698142ed3f06f7c587ca041b994adf175",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1485,10 +1619,10 @@
       "address": "0x1b7a7d099a670256207a30dd0ae13d35f278010f",
       "diff": "242.46",
       "diffExOutside": "242.46",
-      "end": "2026-11-08T21:16:00.061Z",
+      "end": "2026-11-10T10:29:31.202Z",
       "hlEndValue": "36.73",
       "hlPnl": "1948.98",
-      "hlRepeatedSamples": 54,
+      "hlRepeatedSamples": 55,
       "hlStartValue": "4610.76",
       "maxLevelDiff": "322.53",
       "mode": "default",
@@ -1498,7 +1632,7 @@
       "ourStartValue": "4368.29",
       "pass": true,
       "passExOutside": true,
-      "samples": 59,
+      "samples": 60,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2025-10-22T23:36:00.018Z",
@@ -1539,16 +1673,19 @@
       "integrity": {
         "fills": 1233,
         "fundingEvents": 102,
+        "fundingPositionChecks": 344,
         "ledgerEvents": 1,
         "positionChecks": 1364,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.7508322584",
       "meetsMinimums": false,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1566,7 +1703,7 @@
       "turnover": "638.5076007240",
       "twrNet": "-0.6075449789"
     },
-    "metricsHash": "cb37d10693d277c4672bfac64be464db2792c67960d720b86e34c086945f5a8d",
+    "metricsHash": "323fab94d7b12edc19eeaaa1f42c2a49ae6ebeecada4f85c3cabbf3c2dd26838",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1576,10 +1713,10 @@
       "address": "0x59fa085d106541a834017b97060bcbbb0aa82869",
       "diff": "-663.34",
       "diffExOutside": "-663.34",
-      "end": "2026-11-10T04:42:23.644Z",
+      "end": "2026-11-08T16:52:00.046Z",
       "hlEndValue": "90.99",
       "hlPnl": "-3561.12",
-      "hlRepeatedSamples": 56,
+      "hlRepeatedSamples": 55,
       "hlStartValue": "8009.11",
       "maxLevelDiff": "663.34",
       "mode": "default",
@@ -1589,7 +1726,7 @@
       "ourStartValue": "8672.45",
       "pass": true,
       "passExOutside": true,
-      "samples": 60,
+      "samples": 59,
       "stakedHypeAtAnchor": "0.0000",
       "stakedHypeEffect": "0.00",
       "start": "2025-10-22T22:12:00.044Z",
@@ -1630,16 +1767,19 @@
       "integrity": {
         "fills": 304,
         "fundingEvents": 251,
+        "fundingPositionChecks": 247,
         "ledgerEvents": 4,
         "positionChecks": 363,
         "positionDust": 0,
         "positionMaxDust": "0.000000000000",
         "staleIntradayPrices": 0,
-        "staleMarks": 0
+        "staleMarks": 0,
+        "twapOrders": 0,
+        "twapSlices": 0
       },
       "maxDrawdown": "0.4499646311",
       "meetsMinimums": false,
-      "methodology": "phase0-v4",
+      "methodology": "phase0-v5",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1657,7 +1797,7 @@
       "turnover": "156.5748224545",
       "twrNet": "-0.3050416339"
     },
-    "metricsHash": "e88137a333993d0923f72adf2f3dfff12b00b5937e4f53860463505bd7be584f",
+    "metricsHash": "1cfa4a02f1b2260be9cc6d55b8b3a55bd2aac3c1e41250e5bec9fe6eb183e113",
     "source": "alpha-arena",
     "to": "2025-11-04"
   }

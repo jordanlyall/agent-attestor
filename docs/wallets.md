@@ -1,6 +1,7 @@
 # Results on public wallets
 
-Run 2026-11-10 (UTC). Metrics rescored with `phase0-v4` (true time-weighted return, Sortino down-day gate); snapshots and the HL comparison are unchanged from the `phase0-v2` run. Raw per-wallet output, including every comparison
+Run 2026-11-10 (UTC), `phase0-v5`. Every snapshot was refetched for v5, because v1-v4 never
+fetched TWAP slices (`hyperliquid-api.md`). The v4 snapshots are kept in `data/raw-v4/`. Raw per-wallet output, including every comparison
 field, is in `wallet-results.json`. Snapshots are in `data/raw/` (gitignored; rerun with
 `tsx scripts/run-wallets.ts`).
 
@@ -39,24 +40,24 @@ for big volatile positions, and for 2025 samples, where only daily candles remai
 
 | # | Wallet | Source | Mode | TWR | Max DD | Sharpe | Fees $ | Turnover | Min? | HL PnL | Our PnL | Diff | Tol | Result |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | `0x838d8e13` | leaderboard | unified | -4.61% | 9.49% | -1.29 | 23,304 | 71.74 | yes | -64,669 | -65,954 | -1,285 | 8,418 | PASS |
-| 2 | `0xef2ac5c3` | leaderboard | | | | | | | | | | | | ERROR |
-| 3 | `0x2888be69` | leaderboard | | | | | | | | | | | | ERROR |
-| 4 | `0x085d2ac5` | leaderboard | unified | -4.74% | 14.72% | -0.72 | 4,802 | 41.86 | yes | -17,997 | 12,576 | 30,573 | 3,801 | MISS (vault) |
-| 5 | `0x65c6b7f0` | leaderboard | default | -25.07% | 37.07% | -1.22 | 1,523 | 30.36 | yes | -62,798 | -65,097 | -2,299 | 4,777 | PASS |
+| 1 | `0x838d8e13` | leaderboard | unified | -4.61% | 9.49% | -1.29 | 23,304 | 71.74 | yes | -57,483 | -57,477 | 5 | 11,246 | PASS |
+| 2 | `0xef2ac5c3` | leaderboard | unified | 17.09% | 12.55% | 2.90 | 1,291 | 39.33 | yes | 12,816 | 12,875 | 59 | 656 | PASS |
+| 3 | `0x2888be69` | leaderboard | unified | 3.00% | 7.13% | 0.85 | 1,860 | 14.70 | yes | 8,997 | 9,166 | 169 | 573 | PASS |
+| 4 | `0x085d2ac5` | leaderboard | unified | -4.74% | 14.72% | -0.72 | 4,802 | 41.86 | yes | -19,571 | 10,551 | 30,122 | 3,703 | MISS (vault) |
+| 5 | `0x65c6b7f0` | leaderboard | default | -25.07% | 37.07% | -1.22 | 1,523 | 30.36 | yes | -62,926 | -63,463 | -536 | 5,019 | PASS |
 | 6 | `0x5a3c19c7` | leaderboard | | | | | | | | | | | | ERROR |
-| 7 | `0x51a4cee5` | leaderboard | unified | -27.83% | 31.99% | -5.17 | 2,541 | 12.06 | yes | -150,647 | -169,622 | -18,975 | 6,351 | MISS |
-| 8 | `0x3364f3e9` | leaderboard | unified | -0.84% | 15.00% | 0.28 | 1,444 | 10.69 | yes | -23,833 | -15,204 | 8,629 | 7,869 | MISS (staking) |
-| 9 | `0x25497a77` | leaderboard | unified | 9.50% | 36.91% | 1.59 | 228 | 23.65 | yes | 21,679 | 20,172 | -1,507 | 3,395 | PASS |
+| 7 | `0x51a4cee5` | leaderboard | | | | | | | | | | | | ERROR |
+| 8 | `0x3364f3e9` | leaderboard | unified | -0.84% | 15.00% | 0.28 | 1,444 | 10.69 | yes | -22,234 | -10,902 | 11,331 | 10,608 | MISS (staking) |
+| 9 | `0x25497a77` | leaderboard | unified | 9.50% | 36.91% | 1.59 | 228 | 23.65 | yes | 21,772 | 22,809 | 1,037 | 2,303 | PASS |
 | 10 | `0xfc85ab58` | leaderboard | unified | 3.67% | 0.00% | 4.68 | 411 | 7.07 | yes | 8,707 | 8,707 | 0.00 | 0.02 | PASS (exact) |
-| 11 | `0xcb30bc4a` | leaderboard | unified | 2.32% | 7.03% | 0.91 | 429 | 17.18 | yes | -3,337 | 1,316 | 4,653 | 701 | MISS |
-| 12 | `0x1f2becbf` | leaderboard | unified | -73.10% | 87.28% | n/a | 986 | 1159.18 | yes | -8,680 | -8,472 | 208 | 1,038 | PASS |
-| 13 | `0xdb951b52` | leaderboard | unified | -70.80% | 72.60% | -6.14 | 762 | 19.34 | yes | -175,990 | -177,493 | -1,503 | 4,284 | PASS |
-| 14 | `0x9d1cceaf` | leaderboard | disabled | 0.00% | 0.00% | n/a | 0 | 0.00 | no | -110 | 0 | 110 | 0.01 | MISS (staking) |
+| 11 | `0xcb30bc4a` | leaderboard | unified | -3.56% | 7.03% | -1.25 | 472 | 18.01 | yes | -3,337 | -3,327 | 10 | 82 | PASS |
+| 12 | `0x1f2becbf` | leaderboard | unified | -73.10% | 87.28% | n/a | 986 | 1159.18 | yes | -11,974 | -12,684 | -710 | 2,109 | PASS |
+| 13 | `0xdb951b52` | leaderboard | unified | -70.80% | 72.60% | -6.14 | 762 | 19.34 | yes | -175,997 | -177,496 | -1,499 | 4,285 | PASS |
+| 14 | `0x9d1cceaf` | leaderboard | disabled | 0.00% | 0.00% | n/a | 0 | 0.00 | no | -119 | 0 | 119 | 0.01 | MISS (staking) |
 | 15 | `0x0b554de8` | leaderboard | unified | 26.67% | 2.95% | n/a | 7,294 | 1496.00 | yes | 4,539 | 4,539 | 0.01 | 0.01 | MISS (1 cent) |
 | 16 | `0xc20ac4dc` | Arena: DeepSeek V3.1 | default | 12.03% | 49.93% | n/a | 640 | 133.88 | no | -4,261 | -5,373 | -1,112 | 2,318 | PASS |
 | 17 | `0x7a8fd8bb` | Arena: Qwen3 Max | default | 27.82% | 40.45% | n/a | 1,603 | 326.62 | no | -615 | -1,955 | -1,341 | 5,565 | PASS |
-| 18 | `0x56d652e6` | Arena: Grok 4 | default | -43.89% | 57.60% | n/a | 350 | 106.32 | no | -3,487 | -3,234 | 254 | 2,749 | PASS |
+| 18 | `0x56d652e6` | Arena: Grok 4 | default | -43.89% | 57.60% | n/a | 350 | 106.32 | no | -3,488 | -3,234 | 254 | 2,749 | PASS |
 | 19 | `0x67293d91` | Arena: GPT-5 | default | -65.97% | 77.81% | n/a | 512 | 333.38 | no | 1,075 | 1,337 | 262 | 1,015 | PASS |
 | 20 | `0x1b7a7d09` | Arena: Gemini 2.5 Pro | default | -60.75% | 75.08% | n/a | 1,256 | 638.51 | no | 1,949 | 2,191 | 242 | 1,093 | PASS |
 | 21 | `0x59fa085d` | Arena: Claude Sonnet 4.5 | default | -30.50% | 45.00% | n/a | 571 | 156.57 | no | -3,561 | -4,224 | -663 | 1,159 | PASS |
@@ -66,58 +67,66 @@ diff and tolerance are over HL's sample window inside that period, which for Are
 HL's first real sample (2025-10-22) to now. That is why the Arena PnL columns do not line up with
 their TWR.
 
-**Tally: 12 pass, 6 miss, 3 cannot be scored.** Of the 6 misses, 3 are explained by holdings HL
-counts and we do not (vault, staking), 1 is a 1-cent rounding miss, and 2 are unexplained.
+HL's month window trails "now", so the refetch moved it: the HL PnL, our PnL and tolerance
+columns differ from the v4 run for the leaderboard wallets even where nothing else changed.
+
+**Tally: 15 pass, 4 miss, 2 cannot be scored.** All 4 misses are explained: 3 by holdings HL counts
+and we do not (vault, staking), 1 is a 1-cent rounding miss. None are unexplained.
+
+## What v5 changed
+
+v1-v4 never fetched TWAP slices, so every TWAP trade was missing from the replay. Four wallets used
+TWAPs in the period. Each one was a miss or an error before and the cause was misread:
+
+| Wallet | v4 | TWAP slices found | v5 |
+|---|---|---|---|
+| #2 `0xef2a…` | ERROR: "xyz:CRCL changed without a fill" | 5,020 slices, 108 orders | PASS, diff 59 vs tol 656 |
+| #3 `0x2888…` | ERROR: "PONS long vanished" | 371 slices, 2 orders (the PONS close was a TWAP, Nov 4 19:37-19:47) | PASS, diff 169 vs tol 573 |
+| #7 `0x51a4…` | MISS, -18,975, "unexplained" | 4,069 slices; one spot HYPE TWAP is only partly served | ERROR (below) |
+| #11 `0xcb30…` | MISS, +4,653, "unexplained" | 139 slices: HYPE and XMR opened Oct 21, not September | PASS, diff 10 vs tol 82 |
+
+The v4 write-up called #7 and #11 unexplained and suggested HL's own history was stale, and called
+#2 and #3 positions that changed with no public event. Both readings were wrong. A Codex second
+opinion found the TWAP endpoint; I confirmed it independently before fixing the fetcher.
+
+The fix changed one published number materially: #11's TWR went from +2.32% to -3.56% (Sharpe 0.91
+to -1.25), because the replay no longer invents HYPE and XMR positions for Oct 10-20. The other 15
+scorable wallets have the same metrics as in v4.
+
+The `startPosition` check had passed on all four wallets. It cannot see a missing opening fill
+(`methodology.md` section 2). v5 adds an hourly funding check and a TWAP coverage check; both pass on
+all 19 scorable wallets, so neither raised a false alarm here.
 
 ## Every miss, with the cause
 
-**#4 `0x085d…`: vault PnL.** Diff 30,573. The account put 281,140 into a vault on Nov 5 and took
+**#4 `0x085d…`: vault PnL.** Diff 30,122. The account put 281,140 into a vault on Nov 5 and took
 251,054 out on Nov 6. HL keeps vault equity inside account value, so the 30,087 vault loss is PnL to
 HL. We score the trading account only, so the vault moves are flows to us. Adding the vault flows
-back leaves 486, inside the 3,801 tolerance. Sample by sample our equity matches HL's except while
-the money sat in the vault.
+back leaves 35, inside the 3,703 tolerance.
 
-**#8 `0x3364…`: staked HYPE.** Diff 8,629 vs tolerance 7,869. The account has 1,057.66 HYPE staked
-(~$84k). HL counts it; our level history sits a steady ~80-90k below HL's, moving with the HYPE
-price. Adjusting for staked HYPE × the HYPE price change (-12,253) leaves -3,624, inside tolerance.
+**#8 `0x3364…`: staked HYPE.** Diff 11,331 vs tolerance 10,608. The account has 1,057.66 HYPE staked.
+HL counts it; we do not.
+Adjusting for staked HYPE times the HYPE price change leaves -595, inside tolerance.
 
 **#14 `0x9d1c…`: staked HYPE.** Trading account holds $0.007 and never traded; 10.57 HYPE is
-staked. HL's -109.67 is the HYPE price drop on the staked tokens. The staking adjustment (-111.50)
-leaves -1.82. That residual is staking rewards plus HYPE price error, which the tolerance does not
-cover because the trading account holds nothing.
+staked. HL's -119 is the HYPE price drop on the staked tokens. The staking adjustment leaves 2.16.
+That residual is staking rewards plus HYPE price error, which the tolerance does not cover because
+the trading account holds nothing.
 
 **#15 `0x0b55…`: 1 cent.** Flat at both endpoints, so the tolerance is $0.01, and the diff rounds to
 $0.01 and sits just past it. HL publishes values to 6 decimals; the gap is probably rounding in HL's
 own sampling. I left the $0.01 floor alone rather than widen it after seeing results.
 
-**#7 `0x51a4…`: unexplained, -18,975.** Every fill's position check passes and both sides see no
-flows. Our level history sits 9-17k above HL's from Oct 10 to Oct 17, then the two converge from
-Oct 19 and track closely. Spot HYPE prices (its biggest holding) agree with perp prices to 0.1%.
-HL's month and allTime series agree with each other. I did not find the cause.
-
-**#11 `0xcb30…`: unexplained, +4,653.** Same shape: a ~3-4.6k gap (HL higher) until Oct 18, then
-convergence. 15 of its 43 HL samples exactly repeat the previous value (e.g. 95,917.186067 on both
-Oct 12 and Oct 13), while the account held HYPE, XMR and HIP-3 positions. That points at HL's own
-history being stale in places, but I could not prove the gap comes from that.
-
-One more oddity from #11: `userFunding` returned no HYPE or XMR funding for Oct 10-20, although
-fills show both positions open since September. Funding is served as daily aggregates there
-(`nSamples` up to 24). The missing rows are worth tens of dollars a day, too small to explain the
-gap, but it means funding history may not be complete.
-
 ## Wallets that cannot be scored
 
 The scorer stops instead of guessing (`CLAUDE.md`: no silent approximation).
 
-**#2 `0xef2a…`: a position changed without a public fill.** At 2026-10-10T10:02 the replay holds
-683.316 `xyz:CRCL` but HL's `startPosition` on the next fill says -138.229. Some position change in
-between has no fill. Without it, the walk back is wrong for every earlier time.
-
-**#3 `0x2888…`: same, on `PONS`.** The account bought 400,000 PONS perp on Nov 4 (95 fills, all
-`Open Long`, starting from 0). At the anchor there is no PONS position, and there is no closing fill
-or ledger entry. Walking back from the anchor then puts a phantom -400,000 short in place before
-Nov 4. The first version of the scorer counted these mismatches but still produced numbers; it now
-stops. What closed the position is not visible in public data.
+**#7 `0x51a4…`: TWAP history no longer served.** Spot HYPE TWAP 2297432 started 2026-10-08 and
+executed 4,475.18 HYPE before it stopped on Oct 14 (`Insufficient spot balance`). The slice
+endpoint serves only the last 807.22 HYPE of it, from Oct 13 on, for any `startTime`. About
+3,668 HYPE (~$310k) of buys between Oct 8 and Oct 13 are gone from public data, so holdings before
+Oct 13 cannot be rebuilt. With the slices that are served, Codex's partial replay lands at -3,868
+against a 4,188 tolerance, but a pass on incomplete history would mean nothing.
 
 **#6 `0x5a3c…`: `borrowLend`.** The account supplied 273,814 USDC to HL lending. How lent balances
 show up in `spotClearinghouseState` and in HL's account value is not documented, so the scorer
@@ -153,10 +162,9 @@ none, so its Sortino is n/a. The other 8 wallets with a Sortino are unchanged.
    `phase0-v3` (see the end of this file). Two fresh `git clone`s of commit `d8a0397`, `pnpm install --frozen-lockfile`, same snapshot of `0x838d…`: byte-identical
    `metrics.json` and `manifest.json` (`metricsHash eadc053e…`). Both clones ran on this machine
    (Node 25.8.1, macOS); I did not test a second OS or Node version.
-2. **Scorer PnL agrees with HL within tolerance:** 12 of 21 pass outright. With vault and staking
-   adjustments, 14 of 18 scorable wallets agree. The other 4: #14 is explained by staking but keeps
-   a $1.82 residual, #15 misses by a cent, #7 and #11 are unexplained. 3 cannot be scored (#2, #3,
-   #6).
+2. **Scorer PnL agrees with HL within tolerance (v5):** 15 of 21 pass outright. With vault and
+   staking adjustments, 17 of 19 scorable wallets agree. The other 2: #14 is explained by staking
+   but keeps a $2.16 residual, #15 misses by a cent. 2 cannot be scored (#6, #7).
 
 `verify` against the live API also returned MATCH on `0x838d…` on two separate refetches: new anchor
 each time, 37 and then 38 of 63 raw files changed, identical metrics hash (the second run on the
@@ -168,3 +176,7 @@ files changed.
 
 **On `phase0-v4`** (commit `a05cc74`): two fresh clones gave byte-identical `metrics.json` and
 `manifest.json` (`metricsHash 11bdd530…`).
+
+**On `phase0-v5`** (commit `819c70d`): two fresh clones gave byte-identical `metrics.json` on the
+three TWAP wallets (#2 `0066e3e7…`, #3 `c9ac21b1…`, #11 `4c1c40ff…`), each equal to the repo's own
+output. Live `verify` returned MATCH on #11 (24 of 52 raw files changed) and #3 (35 of 65 changed).
