@@ -13,6 +13,8 @@ export interface Manifest {
   scorer: { commit: string; dirty: boolean; methodology: string };
   inputs: Record<string, string>;
   metricsHash: string;
+  // How this snapshot proved the period: check counts, dust, stale prices. Not hashed.
+  integrity: Record<string, unknown>;
   // State at fetch time, not part of the scored period. Shown on the report card only.
   anchor: { time: string; outsideTradingAccount: { vaultEquityUsd: string; stakedHype: string } };
 }
@@ -33,7 +35,7 @@ export function scorerCommit(): { commit: string; dirty: boolean } {
   return { commit, dirty };
 }
 
-export function buildManifest(snap: Snapshot, hashes: Record<string, string>, metricsText: string): Manifest {
+export function buildManifest(snap: Snapshot, hashes: Record<string, string>, metricsText: string, integrity: Record<string, unknown>): Manifest {
   const acc = buildAccount(snap);
   const inputs: Record<string, string> = {};
   for (const k of Object.keys(hashes).sort()) inputs[k] = hashes[k]!;
@@ -43,6 +45,7 @@ export function buildManifest(snap: Snapshot, hashes: Record<string, string>, me
     scorer: { ...scorerCommit(), methodology: METHODOLOGY_VERSION },
     inputs,
     metricsHash: sha256(metricsText),
+    integrity,
     anchor: {
       time: new Date(acc.anchorTime).toISOString(),
       outsideTradingAccount: { vaultEquityUsd: fixed(acc.extras.vaultEquityUsd, 6), stakedHype: fixed(acc.extras.stakedHype, 8) },

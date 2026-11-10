@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Decimal } from "../src/decimal.js";
-import { score } from "../src/score.js";
+import { score, scoreWithIntegrity } from "../src/score.js";
 import { canonicalJson } from "../src/canonical.js";
 import { sha256 } from "../src/hash.js";
 import { basicSnapshot } from "./fixtures/basic.js";
@@ -61,9 +61,12 @@ describe("score on the hand-built fixture", () => {
   });
 
   it("checks every fill against HL's startPosition", () => {
-    // Three fills from the period start to the anchor, including the one after the period.
-    expect(m.integrity.positionChecks).toBe(3);
-    expect(m.integrity.positionDust).toBe(0);
+    // Three fills from the period start to the anchor, including the one after the period. The
+    // counts live in the manifest, not the metrics, because they move as the anchor moves.
+    const { integrity } = scoreWithIntegrity(basicSnapshot());
+    expect(integrity.positionChecks).toBe(3);
+    expect(integrity.positionDust).toBe(0);
+    expect(m.integrity).toBeUndefined();
   });
 
   it("stops when a position changed without a fill", () => {
@@ -121,17 +124,16 @@ describe("TWAP slices", () => {
   };
 
   it("scores a TWAP opening exactly like the same fill from userFillsByTime", () => {
-    const t = score(withTwap("1.0")) as any;
-    expect(t.integrity.twapOrders).toBe(1);
-    expect(t.integrity.twapSlices).toBe(1);
-    expect({ ...t, integrity: null }).toEqual({ ...m, integrity: null });
+    const { metrics, integrity } = scoreWithIntegrity(withTwap("1.0"));
+    expect(integrity.twapOrders).toBe(1);
+    expect(integrity.twapSlices).toBe(1);
+    expect(metrics).toEqual(m);
   });
 
   it("counts a slice once when the regular fill stream also serves it", () => {
     const s = withTwap("1.0");
     s.files["userFillsByTime/0001.json"] = basicSnapshot().files["userFillsByTime/0001.json"]!;
-    const t = score(s) as any;
-    expect({ ...t, integrity: null }).toEqual({ ...m, integrity: null });
+    expect(score(s)).toEqual(m);
   });
 
   it("refuses a TWAP whose early slices are no longer served", () => {
@@ -162,7 +164,7 @@ describe("determinism", () => {
     const b = canonicalJson(score(shuffled(basicSnapshot())));
     expect(b).toBe(a);
     // Locked so that any change to the output is deliberate. Update with a methodology bump.
-    expect(sha256(a)).toBe("47808fdbb8b267632d55feb8c0723482a77772afff00d7bb3b1eec17d521cdd1");
+    expect(sha256(a)).toBe("914c3a193f0cae35d1469834898ba85ff1a31614bf589a7595c80d85ce553d1f");
   });
 
   it("writes no timestamps or floats", () => {

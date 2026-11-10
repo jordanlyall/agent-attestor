@@ -5,7 +5,7 @@ import { buildAccount, applyEvent, checkPositions, checkTwaps, equityOf, exposur
 import { chain, dailyReturns, marksFor, maxDrawdown, sharpe, sortino, type Flow, type Mark } from "./metrics.js";
 import { DAY_MS, isoDate, parseDate } from "./time.js";
 
-export const METHODOLOGY_VERSION = "phase0-v5";
+export const METHODOLOGY_VERSION = "phase0-v6";
 const USD = 6;
 const RATIO = 10;
 
@@ -44,6 +44,13 @@ function bestPrice(acc: Account): PriceSource {
 }
 
 export function score(snap: Snapshot): Record<string, unknown> {
+  return scoreWithIntegrity(snap).metrics;
+}
+
+// Integrity counts describe how one snapshot proved the period, not the period itself: they
+// include events after the period (the walk back runs to the fetch time) and HL compacts old
+// hourly funding into daily rows. So they go in the manifest, outside the metrics hash.
+export function scoreWithIntegrity(snap: Snapshot): { metrics: Record<string, unknown>; integrity: Record<string, unknown> } {
   const acc = buildAccount(snap);
   const from = parseDate(snap.meta.from);
   const to = parseDate(snap.meta.to);
@@ -110,7 +117,7 @@ export function score(snap: Snapshot): Record<string, unknown> {
   const netFlows = sum(flows.map((f) => f.usd));
   const nDays = (to - from) / DAY_MS;
 
-  return {
+  const metrics = {
     address: acc.address,
     period: { from: snap.meta.from, to: snap.meta.to, days: nDays },
     methodology: METHODOLOGY_VERSION,
@@ -147,7 +154,8 @@ export function score(snap: Snapshot): Record<string, unknown> {
       flows: usd(x.flows),
       return: ratio(x.ret),
     })),
-    integrity: {
+  };
+  const integrity = {
       fills: nFills,
       fundingEvents: nFunding,
       ledgerEvents: nLedger,
@@ -160,6 +168,6 @@ export function score(snap: Snapshot): Record<string, unknown> {
       staleMarks: markPx.staleness,
       // Intraday prices (flows, fees, funding) from a candle older than its interval.
       staleIntradayPrices: intraday.staleness,
-    },
   };
+  return { metrics, integrity };
 }

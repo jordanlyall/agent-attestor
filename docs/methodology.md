@@ -1,4 +1,4 @@
-# Methodology (phase0-v5)
+# Methodology (phase0-v6)
 
 The scorer turns a snapshot of raw public API responses into metrics. It is a pure function: no
 network, no clock, no randomness. Every number is a `decimal.js` decimal (60 significant digits,
@@ -167,6 +167,12 @@ twrNet because it is a flow.
 - No timestamps of the run. Dates appear only as period and daily mark dates.
 - Events are ordered by time, then stream (fills, funding, ledger), then API order. API order is
   part of the snapshot, so the order is fixed by the input.
+- The `integrity` counts (fill, funding and TWAP checks, dust, stale prices) are in
+  `manifest.json`, not `metrics.json`. They describe one snapshot, not the period: the checks run
+  up to the fetch time, so later trades add to them, and HL compacts old hourly funding rows into
+  daily ones (one wallet went from 1,847 to 1,479 funding rows between two fetches hours apart,
+  same dollar total). Up to `phase0-v5` they were inside the metrics, so `verify` reported
+  MISMATCH on 9 of 19 wallets for count changes alone.
 - `manifest.json` records the scorer's git commit, whether `src/` or the lockfile were dirty,
   sha256 of every input file, and sha256 of `metrics.json`.
 - `verify` refetches. The anchor and events after the period change between fetches, but the

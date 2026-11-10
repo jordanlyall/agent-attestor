@@ -139,6 +139,11 @@ based limits apply to actions only, not info requests.
   funding looked missing for Oct 10-20; in fact both positions were opened on Oct 21 by TWAPs
   the fetcher had missed. Every open perp position gets an hourly funding row, which the scorer
   now checks (`methodology.md` section 2).
+- **HL compacts funding history as it ages.** Hourly rows are rolled into daily rows
+  (`nSamples` set) over time, even within days: one wallet's Oct 10 - Nov 10 funding went from
+  1,847 rows to 1,479 between two fetches on 2026-11-10. The dollar sum stayed the same on the
+  three wallets where this happened. Daily rows carry no usable position size, so the hourly
+  funding check covers fewer hours the older the period is.
 - `userAbstraction` can also return `"disabled"`. Treated like `default`.
 - A spot pair can go hours or a whole day without a trade, so there is no candle for it. Pricing
   falls back to the last earlier candle.

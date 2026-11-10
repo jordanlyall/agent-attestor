@@ -7,6 +7,16 @@ const usd = (x: string) => {
 };
 const num = (x: string | null) => (x === null ? "n/a (fewer than 30 daily returns)" : Number(x).toFixed(2));
 
+function integrityRows(i: any): [string, string][] {
+  if (!i) return [];
+  const dust = i.positionDust ? ` (${i.positionDust} within dust, max ${i.positionMaxDust})` : "";
+  return [
+    ["Fill position checks", `${i.positionChecks} matched HL${dust}`],
+    ["Funding size checks", `${i.fundingPositionChecks} hours matched HL`],
+    ["TWAP orders", `${i.twapOrders} fully covered (${i.twapSlices} slices)`],
+  ];
+}
+
 // `manifest` is optional: when present, the card also shows what sits outside the trading account.
 export function renderReport(m: any, manifest?: any): string {
   const out = manifest?.anchor?.outsideTradingAccount;
@@ -38,7 +48,7 @@ export function renderReport(m: any, manifest?: any): string {
     ["Operator cohort", m.operatorCohort ?? "n/a (needs binding, Phase 1)"],
     ["Meets minimums", m.meetsMinimums ? "yes (30+ days, avg equity >= $1,000)" : "no (needs 30+ days and avg equity >= $1,000)"],
     ["Daily returns", String(m.observations)],
-    ["Fill position checks", `${m.integrity.positionChecks} matched HL${m.integrity.positionDust ? ` (${m.integrity.positionDust} within dust, max ${m.integrity.positionMaxDust})` : ""}`],
+    ...integrityRows(manifest?.integrity),
     ["Method", m.methodology],
   ];
   const w = Math.max(...rows.map(([k]) => k.length));
