@@ -5,13 +5,19 @@ import { chain, dailyReturns, maxDrawdown, sharpe, sortino } from "../src/metric
 const T0 = Date.parse("2026-01-01T00:00:00Z");
 const H = 3_600_000;
 const DAY = 24 * H;
-const mark = (day: number, equity: string) => ({ time: T0 + day * DAY, equity: d(equity) });
+const mark = (day: number, equity: string, exposure = "0") => ({ time: T0 + day * DAY, equity: d(equity), exposure: d(exposure) });
 const close = (x: Decimal | null, expected: string) => {
   expect(x).not.toBeNull();
   expect(x!.minus(expected).abs().lt("1e-20")).toBe(true);
 };
 
-const flow = (day: number, hour: number, usd: string, before: string, after: string) => ({ time: T0 + day * DAY + hour * H, usd: d(usd), before: d(before), after: d(after) });
+const flow = (day: number, hour: number, usd: string, before: string, after: string, exposureAfter = "0") => ({
+  time: T0 + day * DAY + hour * H,
+  usd: d(usd),
+  before: d(before),
+  after: d(after),
+  exposureAfter: d(exposureAfter),
+});
 
 describe("dailyReturns: true time-weighted, cut at each flow", () => {
   // Day 1: no flows.                       1100/1000                    -> 0.1
@@ -58,6 +64,19 @@ describe("dailyReturns: true time-weighted, cut at each flow", () => {
     // 1.1 * (skipped) * 1.1 -> 0.21. Modified Dietz gave nonsense here.
     const r = dailyReturns([mark(0, "5000"), mark(1, "6600")], [flow(0, 12, "-5500", "5500", "0"), flow(0, 18, "6000", "0", "6000")]);
     close(r[0]!.ret, "0.21");
+  });
+
+  it("never skips a small account that holds positions", () => {
+    // $0.50 of equity behind $100 of exposure falls to $0.25: a real -50%.
+    close(dailyReturns([mark(0, "0.5", "100"), mark(1, "0.25", "100")], [])[0]!.ret, "-0.5");
+  });
+
+  it("caps a loss beyond the whole account at -100% instead of flipping the sign", () => {
+    close(dailyReturns([mark(0, "1000", "20000"), mark(1, "-50", "0")], [])[0]!.ret, "-1");
+  });
+
+  it("refuses a return when equity is zero or negative with positions open", () => {
+    expect(() => dailyReturns([mark(0, "-10", "500"), mark(1, "5", "500")], [])).toThrow(/open positions/);
   });
 
   it("ignores dust below $1 and returns null for a day with no capital", () => {

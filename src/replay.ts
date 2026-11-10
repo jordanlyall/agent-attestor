@@ -369,6 +369,14 @@ export function priceSource(acc: Account, interval: Interval): PriceSource {
   return src;
 }
 
+// Gross value of everything that is not USDC: |token balances| plus |perp notional|.
+export function exposureOf(h: Holdings, t: number, px: PriceSource): Decimal {
+  let e = ZERO;
+  for (const [tok, bal] of h.balances) if (tok !== "USDC") e = e.plus(bal.times(px.tokenPrice(tok, t)).abs());
+  for (const [coin, szi] of h.perps) e = e.plus(szi.times(px.price(coin, t)).abs());
+  return e;
+}
+
 export function equityOf(h: Holdings, t: number, px: PriceSource): Decimal {
   let e = ZERO;
   for (const [tok, bal] of h.balances) e = e.plus(bal.times(px.tokenPrice(tok, t)));

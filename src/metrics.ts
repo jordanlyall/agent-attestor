@@ -5,6 +5,7 @@ import { DAY_MS } from "./time.js";
 export interface Mark {
   time: number; // 00:00 UTC
   equity: Decimal;
+  exposure: Decimal; // gross value of non-USDC holdings and perp notional
 }
 
 export interface Flow {
@@ -12,6 +13,7 @@ export interface Flow {
   usd: Decimal; // + into the account, - out of it
   before: Decimal; // account value just before the flow
   after: Decimal; // account value just after it
+  exposureAfter: Decimal; // gross exposure just after it
 }
 
 export interface DayReturn {
@@ -23,9 +25,17 @@ export interface DayReturn {
   ret: Decimal | null; // null: no capital at risk that day
 }
 
-// Below this starting value a sub-period has no capital at risk and is skipped. Returns on
-// dust (an account swept to $0.000001 overnight) are noise, not performance.
+// A piece is skipped only when the account is flat: equity and gross exposure both below this.
+// Returns on dust (an account swept to $0.000001 overnight) are noise, not performance. An account
+// with open positions is never skipped, however small its equity.
 export const MIN_CAPITAL = new Decimal(1);
+
+export class InvalidReturnError extends Error {
+  constructor(msg: string) {
+    super(msg);
+    this.name = "UnsupportedError";
+  }
+}
 
 // True time-weighted return within each day. The day is cut at every external flow; each piece
 // runs from the value just after one flow (or the 00:00 mark) to the value just before the next
@@ -44,20 +54,23 @@ export function dailyReturns(marks: Mark[], flows: Flow[]): DayReturn[] {
     let growth = ONE;
     let pieces = 0;
     let startValue = a.equity;
-    const piece = (endValue: Decimal) => {
-      if (startValue.gte(MIN_CAPITAL)) {
-        growth = growth.times(endValue.div(startValue));
-        pieces++;
-      }
+    let startExposure = a.exposure;
+    const piece = (endValue: Decimal, at: number) => {
+      if (startValue.lt(MIN_CAPITAL) && startExposure.lt(MIN_CAPITAL)) return; // flat: nothing at risk
+      if (startValue.lte(0)) throw new InvalidReturnError(`equity ${startValue.toString()} with open positions at ${new Date(at).toISOString()}: return undefined`);
+      // A loss beyond the whole account is -100%, never a sign flip.
+      growth = growth.times(Decimal.max(endValue, ZERO).div(startValue));
+      pieces++;
     };
     while (j < sorted.length && sorted[j]!.time < b.time) {
       const x = sorted[j]!;
-      piece(x.before);
+      piece(x.before, x.time);
       f = f.plus(x.usd);
       startValue = x.after;
+      startExposure = x.exposureAfter;
       j++;
     }
-    piece(b.equity);
+    piece(b.equity, b.time);
     out.push({ start: a.time, end: b.time, startEquity: a.equity, endEquity: b.equity, flows: f, ret: pieces === 0 ? null : growth.minus(ONE) });
   }
   return out;

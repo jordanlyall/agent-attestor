@@ -100,7 +100,7 @@ describe("determinism", () => {
     const b = canonicalJson(score(shuffled(basicSnapshot())));
     expect(b).toBe(a);
     // Locked so that any change to the output is deliberate. Update with a methodology bump.
-    expect(sha256(a)).toBe("ce27509835e86337da0233f52287a8c78711dede93ec5ee58aa4afffa0434399");
+    expect(sha256(a)).toBe("52397c85e9fa10e9936d586ca8eef844e101abd3c2f3c5f657e78fa459e57543");
   });
 
   it("writes no timestamps or floats", () => {

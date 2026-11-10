@@ -1,7 +1,7 @@
 // attestor score: a pure function from snapshot to metrics.
 import { Decimal, ZERO, fixed, sum } from "./decimal.js";
 import type { Snapshot } from "./snapshot.js";
-import { buildAccount, applyEvent, checkPositions, equityOf, flowUsd, holdingsAt, priceSource, UnsupportedError, type Account, type FlowKind, type PriceSource } from "./replay.js";
+import { buildAccount, applyEvent, checkPositions, equityOf, exposureOf, flowUsd, holdingsAt, priceSource, UnsupportedError, type Account, type FlowKind, type PriceSource } from "./replay.js";
 import { chain, dailyReturns, marksFor, maxDrawdown, sharpe, sortino, type Flow, type Mark } from "./metrics.js";
 import { DAY_MS, isoDate, parseDate } from "./time.js";
 
@@ -25,6 +25,8 @@ function bestPrice(acc: Account): PriceSource {
       } catch (e) {
         if (!(e instanceof UnsupportedError)) throw e;
         return dd.price(coin, t);
+      } finally {
+        src.staleness = h.staleness + dd.staleness;
       }
     },
     tokenPrice(token, t) {
@@ -33,6 +35,8 @@ function bestPrice(acc: Account): PriceSource {
       } catch (e) {
         if (!(e instanceof UnsupportedError)) throw e;
         return dd.tokenPrice(token, t);
+      } finally {
+        src.staleness = h.staleness + dd.staleness;
       }
     },
   };
@@ -84,7 +88,7 @@ export function score(snap: Snapshot): Record<string, unknown> {
           const before = equityOf(h, e.time, intraday);
           applyEvent(h, e, 1);
           const after = equityOf(h, e.time, intraday);
-          flows.push({ time: e.time, usd: v, before, after });
+          flows.push({ time: e.time, usd: v, before, after, exposureAfter: exposureOf(h, e.time, intraday) });
           flowTotals[e.flow.kind] = flowTotals[e.flow.kind].plus(v);
           i++;
           continue;
@@ -93,7 +97,7 @@ export function score(snap: Snapshot): Record<string, unknown> {
       applyEvent(h, e, 1);
       i++;
     }
-    marks.push({ time: t, equity: equityOf(h, t, markPx) });
+    marks.push({ time: t, equity: equityOf(h, t, markPx), exposure: exposureOf(h, t, markPx) });
   }
 
   const days = dailyReturns(marks, flows);
@@ -150,6 +154,8 @@ export function score(snap: Snapshot): Record<string, unknown> {
       positionDust: positions.dust,
       positionMaxDust: fixed(positions.maxDust, 12),
       staleMarks: markPx.staleness,
+      // Intraday prices (flows, fees, funding) from a candle older than its interval.
+      staleIntradayPrices: intraday.staleness,
     },
   };
 }
