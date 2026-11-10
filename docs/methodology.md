@@ -1,4 +1,4 @@
-# Methodology (phase0-v3)
+# Methodology (phase0-v4)
 
 The scorer turns a snapshot of raw public API responses into metrics. It is a pure function: no
 network, no clock, no randomness. Every number is a `decimal.js` decimal (60 significant digits,
@@ -113,7 +113,11 @@ returns), as a positive fraction. The index's starting value counts as a peak.
 returns or zero variance.
 
 **sortino.** mean(r) / downside deviation * sqrt(365), downside deviation = sqrt(sum(min(r,0)^2) / n).
-Null with fewer than 30 daily returns or no down days.
+Null with fewer than 30 daily returns or fewer than 5 real losing days. A day counts as a real
+loss at -0.01% (1 basis point) or worse. Without this, a near-flat account whose only losses are
+cents of funding has a downside deviation near zero and the ratio explodes (one wallet showed
+418,210 from 16 down days of about -0.00001% each). The losing-day count is only a gate; the
+downside deviation itself still uses every negative day.
 
 **pnlNet.** E(end) - E(start) - net external flows (non-trading income counts as a flow).
 

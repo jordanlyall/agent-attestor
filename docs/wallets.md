@@ -1,6 +1,6 @@
 # Results on public wallets
 
-Run 2026-11-10 (UTC). Metrics rescored with `phase0-v3` (true time-weighted return); snapshots and the HL comparison are unchanged from the `phase0-v2` run. Raw per-wallet output, including every comparison
+Run 2026-11-10 (UTC). Metrics rescored with `phase0-v4` (true time-weighted return, Sortino down-day gate); snapshots and the HL comparison are unchanged from the `phase0-v2` run. Raw per-wallet output, including every comparison
 field, is in `wallet-results.json`. Snapshots are in `data/raw/` (gitignored; rerun with
 `tsx scripts/run-wallets.ts`).
 
@@ -142,9 +142,10 @@ pieces where the account is flat (equity and exposure both under $1). Results:
 TWR weights each day equally, and this account lost while it was small and gained while it was big.
 Accounts without large flows are unchanged (e.g. `0x838d…` -4.61% in both).
 
-**Sortino on near-flat accounts.** `0xfc85…` has Sortino 418,209.66: one microscopically negative
-day makes the downside deviation nearly zero. Correct by the formula, useless as a number. Open
-question.
+**Sortino on near-flat accounts.** In `phase0-v3`, `0xfc85…` had Sortino 418,209.66: its 16 down
+days were each about -0.00001% (cents of funding on a $240k account), so the downside deviation was
+nearly zero. `phase0-v4` needs at least 5 days with a loss of 1 basis point or more; `0xfc85…` has
+none, so its Sortino is n/a. The other 8 wallets with a Sortino are unchanged.
 
 ## Exit gate
 

@@ -115,6 +115,18 @@ describe("sharpe and sortino", () => {
     expect(sortino(rets.slice(1))).toBeNull();
   });
 
+  it("gives no sortino with fewer than 5 real losing days", () => {
+    // 4 losing days of -1%: too few.
+    expect(sortino(Array.from({ length: 30 }, (_, i) => d(i < 4 ? "-0.01" : "0.01")))).toBeNull();
+    // 5 losing days of -0.01% (exactly 1 bp): enough.
+    expect(sortino(Array.from({ length: 30 }, (_, i) => d(i < 5 ? "-0.0001" : "0.01")))).not.toBeNull();
+  });
+
+  it("does not count dips smaller than 1 basis point as losing days", () => {
+    // 16 days of -0.00001% (a near-flat account paying cents of funding): no real downside.
+    expect(sortino(Array.from({ length: 30 }, (_, i) => d(i < 16 ? "-0.0000001" : "0.01")))).toBeNull();
+  });
+
   it("is null when there is no variance or no downside", () => {
     expect(sharpe(Array.from({ length: 30 }, () => d("0.01")))).toBeNull();
     expect(sortino(Array.from({ length: 30 }, () => d("0.01")))).toBeNull();

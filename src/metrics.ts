@@ -107,11 +107,18 @@ export function sharpe(rets: Decimal[]): Decimal | null {
   return mean.div(variance.sqrt()).times(ANNUAL);
 }
 
+// Fewer real losing days than this and the downside deviation is too thin to divide by: a
+// near-flat account with a few cents of funding loss would make Sortino explode. A day counts as
+// a real loss at -0.01% (1 basis point) or worse; smaller dips are noise.
+export const MIN_DOWN_DAYS = 5;
+export const MATERIAL_LOSS = new Decimal("-0.0001");
+
 // Sortino: mean / downside deviation, times sqrt(365). Downside deviation uses a 0 target
-// and divides by all n observations.
+// and divides by all n observations. Null below MIN_OBS days or MIN_DOWN_DAYS real losing days.
 export function sortino(rets: Decimal[]): Decimal | null {
   const n = rets.length;
   if (n < MIN_OBS) return null;
+  if (rets.filter((r) => r.lte(MATERIAL_LOSS)).length < MIN_DOWN_DAYS) return null;
   const mean = sum(rets).div(n);
   const dd = sum(rets.map((r) => (r.isNeg() ? r.pow(2) : ZERO))).div(n);
   if (dd.isZero()) return null;

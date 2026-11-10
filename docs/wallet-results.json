@@ -68,7 +68,7 @@
       },
       "maxDrawdown": "0.0948949804",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -86,7 +86,7 @@
       "turnover": "71.7353254196",
       "twrNet": "-0.0460970916"
     },
-    "metricsHash": "a4a5dc68dce7d4959e71e7afb2c4e1a5c8affdde1f11a86475e6f1460623abb1",
+    "metricsHash": "11bdd5305ca5324594ec1ac3d452a59e7b1e6bf413857c6bbe9e2e0102d5714f",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -175,7 +175,7 @@
       },
       "maxDrawdown": "0.1472316045",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -193,7 +193,7 @@
       "turnover": "41.8630237022",
       "twrNet": "-0.0473754718"
     },
-    "metricsHash": "d34c2860bf9dbdc70729044d5722b17c6803c8b939e7b39a51830821266dc6e3",
+    "metricsHash": "1a5717ac0a28286fb9d41ea4bd807f7f6e0e4e5b9826821853fad81551996476",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -266,7 +266,7 @@
       },
       "maxDrawdown": "0.3706636633",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -284,7 +284,7 @@
       "turnover": "30.3600522745",
       "twrNet": "-0.2507264370"
     },
-    "metricsHash": "99878a06454b57602cc149db88e55260ec23160212a6ed8a2c488353f045f3a6",
+    "metricsHash": "36357f5f7e7cca03f47d101378e2c72da7ff94d9dc05a2a8dbfd27984fe49e06",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -365,7 +365,7 @@
       },
       "maxDrawdown": "0.3198661554",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -383,7 +383,7 @@
       "turnover": "12.0590989945",
       "twrNet": "-0.2783011739"
     },
-    "metricsHash": "a41d70e0153b7f0a7ddd4a6eac1b51ed003ed0b42d54a47e2f9398672bf15c1a",
+    "metricsHash": "8f69b9b36124c356cc5014c2ce4dee7bfa7f826727b561e6d6d381f48c023de6",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -456,7 +456,7 @@
       },
       "maxDrawdown": "0.1500075393",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -474,7 +474,7 @@
       "turnover": "10.6911662457",
       "twrNet": "-0.0084051347"
     },
-    "metricsHash": "da8b68d47757eab9c423236f65e062e0e93ee3abb0a31337fbc25a7df614b88b",
+    "metricsHash": "a5ccfd17fb2af5b2d485935567d6bbab5fad3e8613b4719464b446cdd4b17b5c",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -547,7 +547,7 @@
       },
       "maxDrawdown": "0.3690923990",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -565,7 +565,7 @@
       "turnover": "23.6543677834",
       "twrNet": "0.0949783111"
     },
-    "metricsHash": "82e5417e89256fe7b03cdea781c4b75980f31584527f882355d050631a18be23",
+    "metricsHash": "bdb850b626d04b0897d95a69a38253c33ac3833dd2538ade701d813257678e03",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -638,7 +638,7 @@
       },
       "maxDrawdown": "0.0000003420",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -652,11 +652,11 @@
       },
       "pnlNet": "8706.571829",
       "sharpe": "4.6765089957",
-      "sortino": "418209.6604920488",
+      "sortino": null,
       "turnover": "7.0719476829",
       "twrNet": "0.0366914444"
     },
-    "metricsHash": "593e167fdaf312c944859a09c1ab33bec58c24a4ce9e5cf69bee9ce95739d484",
+    "metricsHash": "c54612cb7f8bd753a1916e9b1ce373e4258098918d8f0bcc91977b5fe496dda2",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -729,7 +729,7 @@
       },
       "maxDrawdown": "0.0702968049",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -747,7 +747,7 @@
       "turnover": "17.1771055461",
       "twrNet": "0.0231703320"
     },
-    "metricsHash": "17db17852539f806180b91e7f04db7fcf9d8f1064f877c7d472f6924ed68725a",
+    "metricsHash": "6221c51e8069682454240ec4fa14c48b69f07d55cb6ca3341bd0c3d707c03021",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -820,7 +820,7 @@
       },
       "maxDrawdown": "0.8727520337",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -838,7 +838,7 @@
       "turnover": "1159.1829620776",
       "twrNet": "-0.7309511960"
     },
-    "metricsHash": "5bb5ab8dba7c5bdb564057c7715f301fac554fcaf70ebec86941bbccaa64f9d8",
+    "metricsHash": "6c80b7cbe3ba8a9407985e78dbca4de7ecf3057e2083ddbaa487b6822d3077a4",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -911,7 +911,7 @@
       },
       "maxDrawdown": "0.7260179940",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -929,7 +929,7 @@
       "turnover": "19.3442196265",
       "twrNet": "-0.7080227476"
     },
-    "metricsHash": "e833ea6bb07d119698ffc47a069fe46d849cf166dee4fc23de426aedca9bc385",
+    "metricsHash": "6727290fc945c2b22a58d5813b77ede1d16c4a4af9384c2cddd386c8e88f8c04",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -1002,7 +1002,7 @@
       },
       "maxDrawdown": "0.0000000000",
       "meetsMinimums": false,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1020,7 +1020,7 @@
       "turnover": "0.0000000000",
       "twrNet": "0.0000000000"
     },
-    "metricsHash": "2991a31f313f051933aa0196bf63dd85d1b2c90291af9c236012fd5b11a84662",
+    "metricsHash": "a81651b882e0c62bdbcc21b3ff8c5280093f10ad4c08294cb44490055fb7c614",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -1093,7 +1093,7 @@
       },
       "maxDrawdown": "0.0294634969",
       "meetsMinimums": true,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1111,7 +1111,7 @@
       "turnover": "1495.9999544828",
       "twrNet": "0.2667315702"
     },
-    "metricsHash": "19f29f5dcd917c288e0e65b18b49497254fb93d221a056b0e9c95e4cfde54004",
+    "metricsHash": "13510a8d8bbfbe7a6eeb005dc92fe9711dae5a0c1b5492a1b647370d38fbdccb",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -1184,7 +1184,7 @@
       },
       "maxDrawdown": "0.4993156166",
       "meetsMinimums": false,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1202,7 +1202,7 @@
       "turnover": "133.8789141174",
       "twrNet": "0.1202556402"
     },
-    "metricsHash": "96a01339a4d128f08c21fa1bc4b6250d32cbf998ccd93691a07886f8043fec11",
+    "metricsHash": "a61bf58599efc42bcc05cb2c0b2839aae373840624b70f225c5981af77723220",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1275,7 +1275,7 @@
       },
       "maxDrawdown": "0.4045370983",
       "meetsMinimums": false,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1293,7 +1293,7 @@
       "turnover": "326.6195290802",
       "twrNet": "0.2782386315"
     },
-    "metricsHash": "44eeeaa270095598696ec652933fd99ec25a5146aba10b4bdf1baf1a38d62d84",
+    "metricsHash": "380029bc356ebb48d11d686e17e0883e75839aae9f5da22c2f745a9fb27a0e5d",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1366,7 +1366,7 @@
       },
       "maxDrawdown": "0.5760191433",
       "meetsMinimums": false,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1384,7 +1384,7 @@
       "turnover": "106.3195771253",
       "twrNet": "-0.4389065905"
     },
-    "metricsHash": "06773dc672f16b7570fc2a4842017ec8bf9114a1daac3cf5c42e0c70b9309616",
+    "metricsHash": "f6cc781e681dde8705694597cb4a75157d6e5a1682e5e6ff962c335e360202ce",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1457,7 +1457,7 @@
       },
       "maxDrawdown": "0.7781247253",
       "meetsMinimums": false,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1475,7 +1475,7 @@
       "turnover": "333.3750187150",
       "twrNet": "-0.6597179065"
     },
-    "metricsHash": "89527390037c8fcfe3cc195f601ccc94fc4a9f4a4b0d31b9db96d8068081f02e",
+    "metricsHash": "886e59d1a52a43b91222aed3a884556d8a72ab44254bd6e1cfb51b616338ada5",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1548,7 +1548,7 @@
       },
       "maxDrawdown": "0.7508322584",
       "meetsMinimums": false,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1566,7 +1566,7 @@
       "turnover": "638.5076007240",
       "twrNet": "-0.6075449789"
     },
-    "metricsHash": "5e494e7ce4aa3ffd9f5a9754dcb12cac75de6cbab1b02bbbc4df4aa857a38edc",
+    "metricsHash": "cb37d10693d277c4672bfac64be464db2792c67960d720b86e34c086945f5a8d",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1639,7 +1639,7 @@
       },
       "maxDrawdown": "0.4499646311",
       "meetsMinimums": false,
-      "methodology": "phase0-v3",
+      "methodology": "phase0-v4",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1657,7 +1657,7 @@
       "turnover": "156.5748224545",
       "twrNet": "-0.3050416339"
     },
-    "metricsHash": "017ac97687a4b9943b0136db3e581ac84d706d0d37af2f29d125e7894a126dcd",
+    "metricsHash": "e88137a333993d0923f72adf2f3dfff12b00b5937e4f53860463505bd7be584f",
     "source": "alpha-arena",
     "to": "2025-11-04"
   }
