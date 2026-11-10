@@ -150,5 +150,6 @@ meaningful. See open questions.
    a $1.82 residual, #15 misses by a cent, #7 and #11 are unexplained. 3 cannot be scored (#2, #3,
    #6).
 
-`verify` against the live API also returned MATCH on `0x838d…` on two separate refetches: new anchor,
-37 of 63 raw files changed, identical metrics hash.
+`verify` against the live API also returned MATCH on `0x838d…` on two separate refetches: new anchor
+each time, 37 and then 38 of 63 raw files changed, identical metrics hash (the second run on the
+final `phase0-v2` code).
