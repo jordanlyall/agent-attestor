@@ -16,9 +16,11 @@ describe("score on the hand-built fixture", () => {
   });
 
   it("computes the return with a deposit and a withdrawal", () => {
-    // Day 1: 975/10000. Day 2: +5000 at 12:00 -> 979.2 / (10975 + 2500). Day 3: flows only -> 0.
-    expect(m.daily.map((x: any) => x.return)).toEqual(["0.0975000000", ten(new Decimal("979.2").div(13475)), "0.0000000000"]);
-    expect(m.twrNet).toBe(ten(new Decimal("1.0975").times(new Decimal("14454.2").div(13475)).minus(1)));
+    // Day 1: 10975/10000. Day 2: 10975 -> 11475 before the 12:00 deposit, 16475 after, ends
+    // 16954.2. Day 3: only flows, nothing held -> 0.
+    const day2 = new Decimal(11475).div(10975).times(new Decimal("16954.2").div(16475));
+    expect(m.daily.map((x: any) => x.return)).toEqual(["0.0975000000", ten(day2.minus(1)), "0.0000000000"]);
+    expect(m.twrNet).toBe(ten(new Decimal("1.0975").times(day2).minus(1)));
   });
 
   it("separates PnL from flows", () => {
@@ -98,7 +100,7 @@ describe("determinism", () => {
     const b = canonicalJson(score(shuffled(basicSnapshot())));
     expect(b).toBe(a);
     // Locked so that any change to the output is deliberate. Update with a methodology bump.
-    expect(sha256(a)).toBe("240c837d745b05c77600b250406fc6d807c057062de20373dd415f1bc9fef4f9");
+    expect(sha256(a)).toBe("ce27509835e86337da0233f52287a8c78711dede93ec5ee58aa4afffa0434399");
   });
 
   it("writes no timestamps or floats", () => {

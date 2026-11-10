@@ -11,22 +11,23 @@ const close = (x: Decimal | null, expected: string) => {
   expect(x!.minus(expected).abs().lt("1e-20")).toBe(true);
 };
 
-describe("dailyReturns: Modified Dietz within the day", () => {
-  // Day 1: no flows.             r = (1100 - 1000) / 1000                 = 0.1
-  // Day 2: +500 at 12:00, w=0.5. r = (1700 - 1100 - 500) / (1100 + 250)  = 100/1350 = 2/27
-  // Day 3: -200 at 00:00, w=1.   r = (1450 - 1700 + 200) / (1700 - 200)  = -50/1500 = -1/30
-  // TWR = 1.1 * 29/27 * 29/30 - 1 = 115.1/810
-  const marks = [mark(0, "1000"), mark(1, "1100"), mark(2, "1700"), mark(3, "1450")];
-  const flows = [
-    { time: T0 + DAY + 12 * H, usd: d("500") },
-    { time: T0 + 2 * DAY, usd: d("-200") },
-  ];
+const flow = (day: number, hour: number, usd: string, before: string, after: string) => ({ time: T0 + day * DAY + hour * H, usd: d(usd), before: d(before), after: d(after) });
+
+describe("dailyReturns: true time-weighted, cut at each flow", () => {
+  // Day 1: no flows.                       1100/1000                    -> 0.1
+  // Day 2: 1100 -> 1210 at 12:00, +500 -> 1710, ends 1795.5.
+  //        (1210/1100) * (1795.5/1710) = 1.1 * 1.05                     -> 0.155
+  // Day 3: -200 at exactly 00:00: 1795.5 -> 1595.5, ends 1755.05.
+  //        (1795.5/1795.5) * (1755.05/1595.5) = 1.1                     -> 0.1
+  // TWR = 1.1 * 1.155 * 1.1 - 1 = 0.39755
+  const marks = [mark(0, "1000"), mark(1, "1100"), mark(2, "1795.5"), mark(3, "1755.05")];
+  const flows = [flow(1, 12, "500", "1210", "1710"), flow(2, 0, "-200", "1795.5", "1595.5")];
   const days = dailyReturns(marks, flows);
 
-  it("weights each flow by the share of the day left", () => {
+  it("chains the pieces between flows", () => {
     close(days[0]!.ret, "0.1");
-    close(days[1]!.ret, new Decimal(2).div(27).toString());
-    close(days[2]!.ret, new Decimal(-1).div(30).toString());
+    close(days[1]!.ret, "0.155");
+    close(days[2]!.ret, "0.1");
   });
 
   it("puts a flow at exactly 00:00 in the day that starts then", () => {
@@ -35,18 +36,33 @@ describe("dailyReturns: Modified Dietz within the day", () => {
   });
 
   it("chains to the hand-computed TWR", () => {
-    close(chain(days.map((x) => x.ret)), new Decimal("115.1").div(810).toString());
+    close(chain(days.map((x) => x.ret)), "0.39755");
+  });
+
+  it("does not depend on the size of a flow", () => {
+    // Same 10% then 5% growth, deposit 500 or 50,000 at 12:00: same return.
+    const small = dailyReturns([mark(0, "1000"), mark(1, "1680")], [flow(0, 12, "500", "1100", "1600")]);
+    const big = dailyReturns([mark(0, "1000"), mark(1, "53655")], [flow(0, 12, "50000", "1100", "51100")]);
+    close(small[0]!.ret, "0.155");
+    close(big[0]!.ret, "0.155");
   });
 
   it("handles a first deposit into an empty account", () => {
-    // E0 = 0, +1000 at 06:00 (w = 0.75), E1 = 1010. r = 10 / 750
-    const r = dailyReturns([mark(0, "0"), mark(1, "1010")], [{ time: T0 + 6 * H, usd: d("1000") }]);
-    close(r[0]!.ret, new Decimal(10).div(750).toString());
+    // 0 until 06:00, +1000, ends 1010. The empty piece is skipped. -> 0.01
+    const r = dailyReturns([mark(0, "0"), mark(1, "1010")], [flow(0, 6, "1000", "0", "1000")]);
+    close(r[0]!.ret, "0.01");
   });
 
-  it("returns null for a day with no capital", () => {
-    const r = dailyReturns([mark(0, "0"), mark(1, "0")], []);
-    expect(r[0]!.ret).toBeNull();
+  it("skips the swept-out piece when an account empties and refills in a day", () => {
+    // 5000 -> 5500 by 12:00, all withdrawn; empty until 18:00; +6000, ends 6600.
+    // 1.1 * (skipped) * 1.1 -> 0.21. Modified Dietz gave nonsense here.
+    const r = dailyReturns([mark(0, "5000"), mark(1, "6600")], [flow(0, 12, "-5500", "5500", "0"), flow(0, 18, "6000", "0", "6000")]);
+    close(r[0]!.ret, "0.21");
+  });
+
+  it("ignores dust below $1 and returns null for a day with no capital", () => {
+    expect(dailyReturns([mark(0, "0.000001"), mark(1, "0.000002")], [])[0]!.ret).toBeNull();
+    expect(dailyReturns([mark(0, "0"), mark(1, "0")], [])[0]!.ret).toBeNull();
   });
 });
 

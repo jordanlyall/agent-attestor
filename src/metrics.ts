@@ -10,6 +10,8 @@ export interface Mark {
 export interface Flow {
   time: number;
   usd: Decimal; // + into the account, - out of it
+  before: Decimal; // account value just before the flow
+  after: Decimal; // account value just after it
 }
 
 export interface DayReturn {
@@ -21,10 +23,15 @@ export interface DayReturn {
   ret: Decimal | null; // null: no capital at risk that day
 }
 
-// Modified Dietz within each day: a flow at time t is weighted by the share of the day left
-// after it. A deposit at 00:00 counts fully, one at 23:59 barely at all.
-//   r = (E1 - E0 - F) / (E0 + sum(w_i * F_i)),  w_i = (dayEnd - t_i) / dayLength
-// A flow belongs to the day [start, end) that contains it.
+// Below this starting value a sub-period has no capital at risk and is skipped. Returns on
+// dust (an account swept to $0.000001 overnight) are noise, not performance.
+export const MIN_CAPITAL = new Decimal(1);
+
+// True time-weighted return within each day. The day is cut at every external flow; each piece
+// runs from the value just after one flow (or the 00:00 mark) to the value just before the next
+// (or the next mark). The pieces are chained, so the size and timing of flows do not move the
+// return. A flow belongs to the day [start, end) that contains it.
+//   r_day = prod(end_k / start_k) - 1, over pieces with start_k >= MIN_CAPITAL
 export function dailyReturns(marks: Mark[], flows: Flow[]): DayReturn[] {
   const out: DayReturn[] = [];
   const sorted = [...flows].sort((a, b) => a.time - b.time);
@@ -34,17 +41,24 @@ export function dailyReturns(marks: Mark[], flows: Flow[]): DayReturn[] {
     const b = marks[i + 1]!;
     while (j < sorted.length && sorted[j]!.time < a.time) j++;
     let f = ZERO;
-    let w = ZERO;
-    const len = new Decimal(b.time - a.time);
+    let growth = ONE;
+    let pieces = 0;
+    let startValue = a.equity;
+    const piece = (endValue: Decimal) => {
+      if (startValue.gte(MIN_CAPITAL)) {
+        growth = growth.times(endValue.div(startValue));
+        pieces++;
+      }
+    };
     while (j < sorted.length && sorted[j]!.time < b.time) {
       const x = sorted[j]!;
+      piece(x.before);
       f = f.plus(x.usd);
-      w = w.plus(x.usd.times(new Decimal(b.time - x.time)).div(len));
+      startValue = x.after;
       j++;
     }
-    const denom = a.equity.plus(w);
-    const ret = denom.lte(0) ? null : b.equity.minus(a.equity).minus(f).div(denom);
-    out.push({ start: a.time, end: b.time, startEquity: a.equity, endEquity: b.equity, flows: f, ret });
+    piece(b.equity);
+    out.push({ start: a.time, end: b.time, startEquity: a.equity, endEquity: b.equity, flows: f, ret: pieces === 0 ? null : growth.minus(ONE) });
   }
   return out;
 }

@@ -5,7 +5,8 @@
 // 01-01 06:00  buy 1 BTC @ 50,000, fee 20
 // 01-01 08:00  funding -5
 // 01-02 00:00  mark: BTC daily close 51,000. cash -40,025 + 51,000          = 10,975
-// 01-02 12:00  deposit 5,000
+// 01-02 12:00  deposit 5,000. Valued around the flow at the 11:00-11:59 hourly close 51,500:
+//              before -40,025 + 51,500 = 11,475, after 16,475
 // 01-02 18:00  sell 1 BTC @ 52,000, fee 20.8
 // 01-03 00:00  mark: flat. cash -40,025 + 5,000 + 52,000 - 20.8            = 16,954.2
 // 01-03 06:00  withdraw 1,000 + 1 fee
@@ -70,6 +71,7 @@ export function basicSnapshot(mode: Mode = "default"): Snapshot {
       { time: t("2026-01-03T06:00:00Z"), hash: "0x2", delta: { type: "withdraw", usdc: "1000", nonce: 1, fee: "1" } },
       { time: t("2026-01-03T10:00:00Z"), hash: "0x3", delta: { type: "rewardsClaim", amount: "10" } },
     ],
+    "candles/1h/BTC.json": [{ t: t("2026-01-02T11:00:00Z"), T: t("2026-01-02T11:59:59.999Z"), s: "BTC", i: "1h", o: "51500", c: "51500", h: "51500", l: "51500", v: "1", n: 1 }],
     "candles/1d/BTC.json": [candle("2025-12-31", "49000"), candle("2026-01-01", "51000"), candle("2026-01-02", "52500"), candle("2026-01-03", "53000")],
   };
   const text: Record<string, string> = {};
@@ -83,7 +85,7 @@ export function basicSnapshot(mode: Mode = "default"): Snapshot {
       fetchedAt: "2026-01-05T00:00:01.000Z",
       requests: Object.keys(files).map((file) => ({
         file,
-        body: file.startsWith("candles/") ? { type: "candleSnapshot", req: { coin: "BTC", interval: "1d", startTime: 0, endTime: 0 } } : { type: file.split(/[/.]/)[0]! },
+        body: file.startsWith("candles/") ? { type: "candleSnapshot", req: { coin: "BTC", interval: file.split("/")[1], startTime: 0, endTime: 0 } } : { type: file.split(/[/.]/)[0]! },
       })),
     },
     files: text,

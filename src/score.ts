@@ -5,7 +5,7 @@ import { buildAccount, applyEvent, checkPositions, equityOf, flowUsd, holdingsAt
 import { chain, dailyReturns, marksFor, maxDrawdown, sharpe, sortino, type Flow, type Mark } from "./metrics.js";
 import { DAY_MS, isoDate, parseDate } from "./time.js";
 
-export const METHODOLOGY_VERSION = "phase0-v2";
+export const METHODOLOGY_VERSION = "phase0-v3";
 const USD = 6;
 const RATIO = 10;
 
@@ -79,9 +79,15 @@ export function score(snap: Snapshot): Record<string, unknown> {
       } else {
         nLedger++;
         if (e.flow) {
+          // Value the account just before and just after the flow, at the same prices.
           const v = flowUsd(e, intraday);
-          flows.push({ time: e.time, usd: v });
+          const before = equityOf(h, e.time, intraday);
+          applyEvent(h, e, 1);
+          const after = equityOf(h, e.time, intraday);
+          flows.push({ time: e.time, usd: v, before, after });
           flowTotals[e.flow.kind] = flowTotals[e.flow.kind].plus(v);
+          i++;
+          continue;
         }
       }
       applyEvent(h, e, 1);
