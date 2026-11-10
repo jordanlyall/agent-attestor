@@ -1,4 +1,5 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { fetchSnapshot } from "./indexer.js";
 import { scoreDir } from "./score-dir.js";
 import { renderReport } from "./report.js";
@@ -39,7 +40,9 @@ async function main(argv: string[]): Promise<number> {
     }
     case "report": {
       if (!target) break;
-      process.stdout.write(renderReport(JSON.parse(readFileSync(target, "utf8"))));
+      const manifestPath = join(dirname(target), "manifest.json");
+      const manifest = existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, "utf8")) : undefined;
+      process.stdout.write(renderReport(JSON.parse(readFileSync(target, "utf8")), manifest));
       return 0;
     }
   }

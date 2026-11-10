@@ -4,6 +4,8 @@ import { fileURLToPath } from "node:url";
 import { sha256 } from "./hash.js";
 import type { Snapshot } from "./snapshot.js";
 import { METHODOLOGY_VERSION } from "./score.js";
+import { buildAccount } from "./replay.js";
+import { fixed } from "./decimal.js";
 
 export interface Manifest {
   address: string;
@@ -11,6 +13,8 @@ export interface Manifest {
   scorer: { commit: string; dirty: boolean; methodology: string };
   inputs: Record<string, string>;
   metricsHash: string;
+  // State at fetch time, not part of the scored period. Shown on the report card only.
+  anchor: { time: string; outsideTradingAccount: { vaultEquityUsd: string; stakedHype: string } };
 }
 
 function git(cmd: string): string {
@@ -30,6 +34,7 @@ export function scorerCommit(): { commit: string; dirty: boolean } {
 }
 
 export function buildManifest(snap: Snapshot, hashes: Record<string, string>, metricsText: string): Manifest {
+  const acc = buildAccount(snap);
   const inputs: Record<string, string> = {};
   for (const k of Object.keys(hashes).sort()) inputs[k] = hashes[k]!;
   return {
@@ -38,5 +43,9 @@ export function buildManifest(snap: Snapshot, hashes: Record<string, string>, me
     scorer: { ...scorerCommit(), methodology: METHODOLOGY_VERSION },
     inputs,
     metricsHash: sha256(metricsText),
+    anchor: {
+      time: new Date(acc.anchorTime).toISOString(),
+      outsideTradingAccount: { vaultEquityUsd: fixed(acc.extras.vaultEquityUsd, 6), stakedHype: fixed(acc.extras.stakedHype, 8) },
+    },
   };
 }

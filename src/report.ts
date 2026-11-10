@@ -7,7 +7,13 @@ const usd = (x: string) => {
 };
 const num = (x: string | null) => (x === null ? "n/a (fewer than 30 daily returns)" : Number(x).toFixed(2));
 
-export function renderReport(m: any): string {
+// `manifest` is optional: when present, the card also shows what sits outside the trading account.
+export function renderReport(m: any, manifest?: any): string {
+  const out = manifest?.anchor?.outsideTradingAccount;
+  const outside: [string, string][] =
+    out && (Number(out.vaultEquityUsd) > 0 || Number(out.stakedHype) > 0)
+      ? [["Outside trading acct", `${usd(out.vaultEquityUsd)} in vaults, ${Number(out.stakedHype).toLocaleString("en-US", { maximumFractionDigits: 4 })} HYPE staked (at ${manifest.anchor.time.slice(0, 16)}Z; not scored)`]]
+      : [];
   const rows: [string, string][] = [
     ["Account", m.address],
     ["Period", `${m.period.from} to ${m.period.to} (${m.period.days} days, marks at 00:00 UTC)`],
@@ -27,6 +33,7 @@ export function renderReport(m: any): string {
     ["Turnover", m.turnover === null ? "n/a" : `${Number(m.turnover).toFixed(1)}x avg equity (${usd(m.notionalTraded)} traded)`],
     ["Non-trading income", `${usd(m.nonTradingIncome.usd)} (excluded from return)`],
     ["Net external flows", usd(m.externalFlows.net)],
+    ...outside,
     ["", ""],
     ["Operator cohort", m.operatorCohort ?? "n/a (needs binding, Phase 1)"],
     ["Meets minimums", m.meetsMinimums ? "yes (30+ days, avg equity >= $1,000)" : "no (needs 30+ days and avg equity >= $1,000)"],
