@@ -1,4 +1,4 @@
-# Methodology (phase0-v2)
+# Methodology (phase0-v3)
 
 The scorer turns a snapshot of raw public API responses into metrics. It is a pure function: no
 network, no clock, no randomness. Every number is a `decimal.js` decimal (60 significant digits,
@@ -53,7 +53,9 @@ USDC is 1.
 
 This differs from HL's mark price (an oracle/median price) by the gap between last trade and mark,
 usually small for liquid markets and larger for thin ones. `integrity.staleMarks` counts marks
-priced from a candle older than one day (no trades that day).
+priced from a candle older than one day (no trades that day). `integrity.staleIntradayPrices`
+counts the same for intraday prices (flows, fees, funding) taken from a candle older than its
+interval.
 
 Intraday values (fees paid in a non-USDC token, token flows without a stated USD value) use the
 last 1h close before the event, falling back to 1d.
@@ -78,15 +80,31 @@ Tokens with no USDC spot pair cannot be priced. The scorer stops with an error r
 
 **twrNet.** Time-weighted return, net of fees and funding, chained over daily returns.
 
-Flow-timing convention: **Modified Dietz within each day.** For day [M0, M1) with equity E0, E1
-and flows F_i at times t_i:
+Flow-timing convention: **true time-weighted return, cut at every external flow.** The replay can
+value the account at any moment, so each flow is valued in place: the account is valued just
+before the flow (events earlier in event order applied) and just after it, at the same prices (last
+1h close before the flow, falling back to 1d). A day [M0, M1) with flows at t_1..t_k splits into
+pieces with no flow inside them:
 
-    r = (E1 - E0 - sum F_i) / (E0 + sum(w_i * F_i)),   w_i = (M1 - t_i) / (M1 - M0)
+    r_day = (V(t_1-) / E0) * (V(t_2-) / V(t_1+)) * ... * (E1 / V(t_k+)) - 1
 
-A deposit at 00:00 counts for the full day, one at 12:00 for half. A flow exactly at 00:00 belongs
-to the day starting then. When the denominator is zero or negative (no capital at risk), the day
-has no return: it is left out of the chain and out of Sharpe/Sortino. Tested in
-`test/metrics.test.ts`.
+The size and timing of flows do not move the return. A flow exactly at 00:00 belongs to the day
+starting then. Edge rules, each tested in `test/metrics.test.ts`:
+
+- A piece is skipped only when the account is **flat** at its start: equity and gross exposure
+  (|non-USDC balances| + |perp notional|) both below $1. Dust left after a sweep cannot produce
+  returns, and a small account with open positions is never skipped.
+- A piece that ends at or below zero counts as -100%. The chain never flips sign.
+- Zero or negative equity with positions open at the start of a piece: scoring stops, because
+  the return is undefined.
+- A day with no pieces left has no return. It is left out of the chain and out of Sharpe/Sortino.
+
+Prices inside the day come from hourly candles, so piece values carry the same price
+approximation as the marks. At midnight the 1h and 1d closes are the same trade, so the two
+sources agree at mark boundaries.
+
+`phase0-v1/v2` used Modified Dietz within each day. It broke on accounts that sweep most of their
+funds out and back within a day (`wallets.md`).
 
 **maxDrawdown.** Largest peak-to-trough fall of the return index (start 1, chained daily
 returns), as a positive fraction. The index's starting value counts as a peak.

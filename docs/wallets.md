@@ -1,6 +1,6 @@
 # Results on public wallets
 
-Run 2026-11-10 (UTC) with scorer `phase0-v2`. Raw per-wallet output, including every comparison
+Run 2026-11-10 (UTC). Metrics rescored with `phase0-v3` (true time-weighted return); snapshots and the HL comparison are unchanged from the `phase0-v2` run. Raw per-wallet output, including every comparison
 field, is in `wallet-results.json`. Snapshots are in `data/raw/` (gitignored; rerun with
 `tsx scripts/run-wallets.ts`).
 
@@ -42,31 +42,29 @@ for big volatile positions, and for 2025 samples, where only daily candles remai
 | 1 | `0x838d8e13` | leaderboard | unified | -4.61% | 9.49% | -1.29 | 23,304 | 71.74 | yes | -64,669 | -65,954 | -1,285 | 8,418 | PASS |
 | 2 | `0xef2ac5c3` | leaderboard | | | | | | | | | | | | ERROR |
 | 3 | `0x2888be69` | leaderboard | | | | | | | | | | | | ERROR |
-| 4 | `0x085d2ac5` | leaderboard | unified | -63.94%* | 68.08%* | -3.05* | 4,802 | 41.86 | yes | -17,997 | 12,576 | 30,573 | 3,801 | MISS (vault) |
+| 4 | `0x085d2ac5` | leaderboard | unified | -4.74% | 14.72% | -0.72 | 4,802 | 41.86 | yes | -17,997 | 12,576 | 30,573 | 3,801 | MISS (vault) |
 | 5 | `0x65c6b7f0` | leaderboard | default | -25.07% | 37.07% | -1.22 | 1,523 | 30.36 | yes | -62,798 | -65,097 | -2,299 | 4,777 | PASS |
 | 6 | `0x5a3c19c7` | leaderboard | | | | | | | | | | | | ERROR |
 | 7 | `0x51a4cee5` | leaderboard | unified | -27.83% | 31.99% | -5.17 | 2,541 | 12.06 | yes | -150,647 | -169,622 | -18,975 | 6,351 | MISS |
-| 8 | `0x3364f3e9` | leaderboard | unified | -0.94% | 15.00% | 0.27 | 1,444 | 10.69 | yes | -23,833 | -15,204 | 8,629 | 7,869 | MISS (staking) |
-| 9 | `0x25497a77` | leaderboard | unified | 11.92% | 36.91% | 1.71 | 228 | 23.65 | yes | 21,679 | 20,172 | -1,507 | 3,395 | PASS |
+| 8 | `0x3364f3e9` | leaderboard | unified | -0.84% | 15.00% | 0.28 | 1,444 | 10.69 | yes | -23,833 | -15,204 | 8,629 | 7,869 | MISS (staking) |
+| 9 | `0x25497a77` | leaderboard | unified | 9.50% | 36.91% | 1.59 | 228 | 23.65 | yes | 21,679 | 20,172 | -1,507 | 3,395 | PASS |
 | 10 | `0xfc85ab58` | leaderboard | unified | 3.67% | 0.00% | 4.68 | 411 | 7.07 | yes | 8,707 | 8,707 | 0.00 | 0.02 | PASS (exact) |
 | 11 | `0xcb30bc4a` | leaderboard | unified | 2.32% | 7.03% | 0.91 | 429 | 17.18 | yes | -3,337 | 1,316 | 4,653 | 701 | MISS |
-| 12 | `0x1f2becbf` | leaderboard | unified | -32.48%* | 89.38%* | 4.14* | 986 | 1159.18 | yes | -8,680 | -8,472 | 208 | 1,038 | PASS |
-| 13 | `0xdb951b52` | leaderboard | unified | -70.03% | 72.60% | -5.95 | 762 | 19.34 | yes | -175,990 | -177,493 | -1,503 | 4,284 | PASS |
+| 12 | `0x1f2becbf` | leaderboard | unified | -73.10% | 87.28% | n/a | 986 | 1159.18 | yes | -8,680 | -8,472 | 208 | 1,038 | PASS |
+| 13 | `0xdb951b52` | leaderboard | unified | -70.80% | 72.60% | -6.14 | 762 | 19.34 | yes | -175,990 | -177,493 | -1,503 | 4,284 | PASS |
 | 14 | `0x9d1cceaf` | leaderboard | disabled | 0.00% | 0.00% | n/a | 0 | 0.00 | no | -110 | 0 | 110 | 0.01 | MISS (staking) |
-| 15 | `0x0b554de8` | leaderboard | unified | 34.85% | 7.30% | n/a | 7,294 | 1496.00 | yes | 4,539 | 4,539 | 0.01 | 0.01 | MISS (1 cent) |
-| 16 | `0xc20ac4dc` | Arena: DeepSeek V3.1 | default | 11.93% | 49.95% | n/a | 640 | 133.88 | no | -4,261 | -5,373 | -1,112 | 2,318 | PASS |
-| 17 | `0x7a8fd8bb` | Arena: Qwen3 Max | default | 27.68% | 40.45% | n/a | 1,603 | 326.62 | no | -615 | -1,955 | -1,341 | 5,565 | PASS |
-| 18 | `0x56d652e6` | Arena: Grok 4 | default | -43.83% | 57.60% | n/a | 350 | 106.32 | no | -3,487 | -3,234 | 254 | 2,749 | PASS |
-| 19 | `0x67293d91` | Arena: GPT-5 | default | -66.00% | 77.83% | n/a | 512 | 333.38 | no | 1,075 | 1,337 | 262 | 1,015 | PASS |
+| 15 | `0x0b554de8` | leaderboard | unified | 26.67% | 2.95% | n/a | 7,294 | 1496.00 | yes | 4,539 | 4,539 | 0.01 | 0.01 | MISS (1 cent) |
+| 16 | `0xc20ac4dc` | Arena: DeepSeek V3.1 | default | 12.03% | 49.93% | n/a | 640 | 133.88 | no | -4,261 | -5,373 | -1,112 | 2,318 | PASS |
+| 17 | `0x7a8fd8bb` | Arena: Qwen3 Max | default | 27.82% | 40.45% | n/a | 1,603 | 326.62 | no | -615 | -1,955 | -1,341 | 5,565 | PASS |
+| 18 | `0x56d652e6` | Arena: Grok 4 | default | -43.89% | 57.60% | n/a | 350 | 106.32 | no | -3,487 | -3,234 | 254 | 2,749 | PASS |
+| 19 | `0x67293d91` | Arena: GPT-5 | default | -65.97% | 77.81% | n/a | 512 | 333.38 | no | 1,075 | 1,337 | 262 | 1,015 | PASS |
 | 20 | `0x1b7a7d09` | Arena: Gemini 2.5 Pro | default | -60.75% | 75.08% | n/a | 1,256 | 638.51 | no | 1,949 | 2,191 | 242 | 1,093 | PASS |
-| 21 | `0x59fa085d` | Arena: Claude Sonnet 4.5 | default | -30.53% | 45.02% | n/a | 571 | 156.57 | no | -3,561 | -4,224 | -663 | 1,159 | PASS |
+| 21 | `0x59fa085d` | Arena: Claude Sonnet 4.5 | default | -30.50% | 45.00% | n/a | 571 | 156.57 | no | -3,561 | -4,224 | -663 | 1,159 | PASS |
 
 TWR, drawdown, Sharpe, fees and turnover are over our period (00:00 UTC marks). HL PnL, our PnL,
 diff and tolerance are over HL's sample window inside that period, which for Arena wallets runs from
 HL's first real sample (2025-10-22) to now. That is why the Arena PnL columns do not line up with
 their TWR.
-
-\* Not meaningful: see "TWR on flow-heavy accounts" below.
 
 **Tally: 12 pass, 6 miss, 3 cannot be scored.** Of the 6 misses, 3 are explained by holdings HL
 counts and we do not (vault, staking), 1 is a 1-cent rounding miss, and 2 are unexplained.
@@ -127,22 +125,31 @@ refuses the ledger type.
 
 ## TWR on flow-heavy accounts
 
-The flow convention is Modified Dietz within each day (`methodology.md`). It assumes flows are small
-next to equity. Two accounts break that:
+`phase0-v2` used Modified Dietz within each day. It assumes flows are small next to equity, and two
+accounts broke it: `0x1f2b…` sweeps nearly all funds out and back in (equity $0.000001 at several
+midnights), and `0x085d…` moved six-figure sums in and out within single days. Their v2 numbers
+were noise: TWR -63.94% and Sharpe 4.14 next to a -32% TWR.
 
-- `0x1f2b…` sweeps nearly all funds out and back in repeatedly: equity is $0.000001 at several
-  midnights, and single days show returns of +290% and +377%. Its Sharpe of 4.14 next to a -32% TWR
-  is an artifact.
-- `0x085d…` moved six-figure sums in and out within single days; on Oct 30 its whole return rests
-  on a $39 starting balance, which drags TWR to -64% while dollar PnL is far smaller.
+`phase0-v3` values the account just before and after every flow and chains the pieces, skipping
+pieces where the account is flat (equity and exposure both under $1). Results:
 
-Dollar PnL, fees, funding and turnover are fine for these. TWR, drawdown, Sharpe and Sortino are not
-meaningful. See open questions.
+| Wallet | v2 TWR | v3 TWR | v2 Sharpe | v3 Sharpe |
+|---|---|---|---|---|
+| `0x085d…` | -63.94% | -4.74% | -3.05 | -0.72 |
+| `0x1f2b…` | -32.48% | -73.10% | 4.14 | n/a (25 daily returns after dust days are skipped) |
+
+`0x085d…` now has positive dollar PnL (+17,321) next to a -4.74% TWR. That is not a contradiction:
+TWR weights each day equally, and this account lost while it was small and gained while it was big.
+Accounts without large flows are unchanged (e.g. `0x838d…` -4.61% in both).
+
+**Sortino on near-flat accounts.** `0xfc85…` has Sortino 418,209.66: one microscopically negative
+day makes the downside deviation nearly zero. Correct by the formula, useless as a number. Open
+question.
 
 ## Exit gate
 
-1. **Same snapshot, same hash on two clean checkouts:** pass. Two fresh `git clone`s of commit
-   `d8a0397`, `pnpm install --frozen-lockfile`, same snapshot of `0x838d…`: byte-identical
+1. **Same snapshot, same hash on two clean checkouts:** pass, on `phase0-v2` and again on
+   `phase0-v3` (see the end of this file). Two fresh `git clone`s of commit `d8a0397`, `pnpm install --frozen-lockfile`, same snapshot of `0x838d…`: byte-identical
    `metrics.json` and `manifest.json` (`metricsHash eadc053e…`). Both clones ran on this machine
    (Node 25.8.1, macOS); I did not test a second OS or Node version.
 2. **Scorer PnL agrees with HL within tolerance:** 12 of 21 pass outright. With vault and staking
