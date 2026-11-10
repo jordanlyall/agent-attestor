@@ -390,3 +390,40 @@ export { Decimal };
 export function usdcPairOf(acc: Account, token: string): string | undefined {
   return usdcPair(acc.spotMeta, token);
 }
+
+// Below this, a startPosition difference is rounding dust HL applies without an event.
+export const DUST = new Decimal("0.000001");
+
+export interface PositionCheck {
+  checks: number;
+  dust: number;
+  maxDust: Decimal;
+}
+
+// Walk forward from `from` to the anchor and compare every fill's startPosition with the replay.
+// A real disagreement means some position change has no public event (the walk-back is then
+// wrong for every earlier time), so scoring stops.
+export function checkPositions(acc: Account, from: number): PositionCheck {
+  const h = holdingsAt(acc, from);
+  let checks = 0;
+  let dust = 0;
+  let maxDust = ZERO;
+  for (const e of acc.events) {
+    if (e.time < from) continue;
+    if (e.kind === "fill") {
+      const before = e.spot ? (h.balances.get(e.base) ?? ZERO) : (h.perps.get(e.coin) ?? ZERO);
+      const diff = before.minus(e.startPosition).abs();
+      checks++;
+      if (diff.gt(DUST))
+        throw new UnsupportedError(
+          `replay disagrees with HL at ${new Date(e.time).toISOString()} ${e.coin}: replay ${before.toString()}, HL startPosition ${e.startPosition.toString()}. A position changed without a public fill.`,
+        );
+      if (!diff.isZero()) {
+        dust++;
+        if (diff.gt(maxDust)) maxDust = diff;
+      }
+    }
+    applyEvent(h, e, 1);
+  }
+  return { checks, dust, maxDust };
+}

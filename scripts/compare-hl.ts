@@ -27,6 +27,11 @@ function candleAround(acc: Account, coin: string, t: number): Candle | undefined
     const c = list.find((x) => x.t <= t && t <= x.T);
     if (c) return c;
   }
+  // No trade in the hour or day around t (thin market): use the last candle before it.
+  for (const iv of ["1h", "1d"] as const) {
+    const c = ((acc.candles[iv].get(coin) ?? []) as unknown as Candle[]).filter((x) => x.T < t).pop();
+    if (c) return c;
+  }
   return undefined;
 }
 
@@ -63,6 +68,10 @@ export interface Comparison {
   hlEndValue: string;
   ourEndValue: string;
   maxLevelDiff: string;
+  vaultFlowsInWindow: string;
+  diffExVault: string;
+  passExVault: boolean;
+  hlRepeatedSamples: number;
   ourFlows: string;
   vaultEquityAtAnchor: string;
   stakedHypeAtAnchor: string;
@@ -114,11 +123,22 @@ export function compare(dir: string, preferred = "month"): Comparison {
   const first = ours[0]!;
   const last = ours[ours.length - 1]!;
   let flows = ZERO;
-  for (const e of acc.events) if (e.kind === "ledger" && e.time > first.t && e.time <= last.t) flows = flows.plus(flowUsd(e, px));
+  let vaultFlows = ZERO;
+  for (const e of acc.events)
+    if (e.kind === "ledger" && e.time > first.t && e.time <= last.t) {
+      const v = flowUsd(e, px);
+      flows = flows.plus(v);
+      if (e.flow?.kind === "vault") vaultFlows = vaultFlows.plus(v);
+    }
+  // HL keeps vault equity inside account value, so vault PnL is PnL to HL and a flow to us.
+  // When no vault is held at either end, HL's extra PnL is exactly -vaultFlows.
+  let frozen = 0;
+  for (let k = 1; k < av.length; k++) if (av[k]![1] === av[k - 1]![1]) frozen++;
   const ourPnl = last.ours.minus(first.ours).minus(flows);
   const hlPnl = new Decimal(pnl.get(last.t)!).minus(pnl.get(first.t)!);
   const tol = rangeBound(acc, first.h, first.t).plus(rangeBound(acc, last.h, last.t)).plus("0.01");
   const diff = ourPnl.minus(hlPnl);
+  const diffExVault = diff.plus(vaultFlows);
   const maxLevel = ours.reduce((m, x) => Decimal.max(m, x.ours.minus(x.hl).abs()), ZERO);
   return {
     address: acc.address,
@@ -137,6 +157,10 @@ export function compare(dir: string, preferred = "month"): Comparison {
     hlEndValue: fixed(last.hl, 2),
     ourEndValue: fixed(last.ours, 2),
     maxLevelDiff: fixed(maxLevel, 2),
+    vaultFlowsInWindow: fixed(vaultFlows, 2),
+    diffExVault: fixed(diffExVault, 2),
+    passExVault: diffExVault.abs().lte(tol),
+    hlRepeatedSamples: frozen,
     ourFlows: fixed(flows, 2),
     vaultEquityAtAnchor: fixed(acc.extras.vaultEquityUsd, 2),
     stakedHypeAtAnchor: fixed(acc.extras.stakedHype, 4),

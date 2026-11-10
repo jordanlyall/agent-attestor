@@ -31,7 +31,7 @@ export function renderReport(m: any): string {
     ["Operator cohort", m.operatorCohort ?? "n/a (needs binding, Phase 1)"],
     ["Meets minimums", m.meetsMinimums ? "yes (30+ days, avg equity >= $1,000)" : "no (needs 30+ days and avg equity >= $1,000)"],
     ["Daily returns", String(m.observations)],
-    ["Fill position checks", `${m.integrity.positionChecks - m.integrity.positionMismatches}/${m.integrity.positionChecks} matched HL`],
+    ["Fill position checks", `${m.integrity.positionChecks} matched HL${m.integrity.positionDust ? ` (${m.integrity.positionDust} within dust, max ${m.integrity.positionMaxDust})` : ""}`],
     ["Method", m.methodology],
   ];
   const w = Math.max(...rows.map(([k]) => k.length));

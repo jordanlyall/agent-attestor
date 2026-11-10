@@ -59,8 +59,18 @@ describe("score on the hand-built fixture", () => {
   });
 
   it("checks every fill against HL's startPosition", () => {
-    expect(m.integrity.positionChecks).toBe(2);
-    expect(m.integrity.positionMismatches).toBe(0);
+    // Three fills from the period start to the anchor, including the one after the period.
+    expect(m.integrity.positionChecks).toBe(3);
+    expect(m.integrity.positionDust).toBe(0);
+  });
+
+  it("stops when a position changed without a fill", () => {
+    const s = basicSnapshot();
+    // Anchor says flat, but the post-period buy leaves 0.1 BTC: the replay disagrees with HL.
+    const ch = JSON.parse(s.files["clearinghouseState/_default.json"]!);
+    ch.assetPositions = [];
+    s.files["clearinghouseState/_default.json"] = JSON.stringify(ch);
+    expect(() => score(s)).toThrow(/without a public fill/);
   });
 
   it("gives the same metrics for a unified account", () => {
@@ -88,7 +98,7 @@ describe("determinism", () => {
     const b = canonicalJson(score(shuffled(basicSnapshot())));
     expect(b).toBe(a);
     // Locked so that any change to the output is deliberate. Update with a methodology bump.
-    expect(sha256(a)).toBe("1e766a7ad810f6b9b2e802229b9d9288d0ca0897098524d3507b69ea51ac5be7");
+    expect(sha256(a)).toBe("240c837d745b05c77600b250406fc6d807c057062de20373dd415f1bc9fef4f9");
   });
 
   it("writes no timestamps or floats", () => {

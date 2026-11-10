@@ -1,11 +1,11 @@
 // attestor score: a pure function from snapshot to metrics.
 import { Decimal, ZERO, fixed, sum } from "./decimal.js";
 import type { Snapshot } from "./snapshot.js";
-import { buildAccount, applyEvent, equityOf, flowUsd, holdingsAt, priceSource, UnsupportedError, type Account, type FlowKind, type PriceSource } from "./replay.js";
+import { buildAccount, applyEvent, checkPositions, equityOf, flowUsd, holdingsAt, priceSource, UnsupportedError, type Account, type FlowKind, type PriceSource } from "./replay.js";
 import { chain, dailyReturns, marksFor, maxDrawdown, sharpe, sortino, type Flow, type Mark } from "./metrics.js";
 import { DAY_MS, isoDate, parseDate } from "./time.js";
 
-export const METHODOLOGY_VERSION = "phase0-v1";
+export const METHODOLOGY_VERSION = "phase0-v2";
 const USD = 6;
 const RATIO = 10;
 
@@ -60,9 +60,7 @@ export function score(snap: Snapshot): Record<string, unknown> {
   let nFills = 0;
   let nFunding = 0;
   let nLedger = 0;
-  let positionChecks = 0;
-  let positionMismatches = 0;
-  const mismatchExamples: string[] = [];
+  const positions = checkPositions(acc, from);
 
   let i = acc.events.findIndex((e) => e.time >= from);
   if (i < 0) i = acc.events.length;
@@ -71,12 +69,6 @@ export function score(snap: Snapshot): Record<string, unknown> {
       const e = acc.events[i]!;
       if (e.kind === "fill") {
         nFills++;
-        const before = e.spot ? (h.balances.get(e.base) ?? ZERO) : (h.perps.get(e.coin) ?? ZERO);
-        positionChecks++;
-        if (!before.eq(e.startPosition)) {
-          positionMismatches++;
-          if (mismatchExamples.length < 5) mismatchExamples.push(`${new Date(e.time).toISOString()} ${e.coin} replay=${before.toString()} hl=${e.startPosition.toString()}`);
-        }
         const qPx = intraday.tokenPrice(e.quote, e.time);
         notional = notional.plus(e.signedSz.abs().times(e.px).times(qPx));
         const feeUsd = e.feeToken === e.quote ? e.fee.times(qPx) : e.feeToken === e.base && e.spot ? e.fee.times(e.px).times(qPx) : e.fee.times(intraday.tokenPrice(e.feeToken, e.time));
@@ -148,9 +140,9 @@ export function score(snap: Snapshot): Record<string, unknown> {
       fills: nFills,
       fundingEvents: nFunding,
       ledgerEvents: nLedger,
-      positionChecks,
-      positionMismatches,
-      mismatchExamples,
+      positionChecks: positions.checks,
+      positionDust: positions.dust,
+      positionMaxDust: fixed(positions.maxDust, 12),
       staleMarks: markPx.staleness,
     },
   };
