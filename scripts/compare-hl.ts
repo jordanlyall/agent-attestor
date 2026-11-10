@@ -11,7 +11,7 @@
 //   tol = sum over both endpoints, all holdings of |qty| * ((high - low) + 0.001 * close) + 0.01
 import { Decimal, ZERO, fixed } from "../src/decimal.js";
 import { loadSnapshot } from "../src/snapshot.js";
-import { buildAccount, flowUsd, holdingsAt, priceSource, equityOf, usdcPairOf, type Account, type Holdings } from "../src/replay.js";
+import { buildAccount, flowUsd, holdingsAt, priceSource, equityOf, usdcPairOf, type Account, type Holdings, type PriceSource } from "../src/replay.js";
 
 interface Candle {
   t: number;
@@ -21,11 +21,19 @@ interface Candle {
   l: string;
 }
 
+function candleAround(acc: Account, coin: string, t: number): Candle | undefined {
+  for (const iv of ["1h", "1d"] as const) {
+    const list = (acc.candles[iv].get(coin) ?? []) as unknown as Candle[];
+    const c = list.find((x) => x.t <= t && t <= x.T);
+    if (c) return c;
+  }
+  return undefined;
+}
+
 function rangeBound(acc: Account, h: Holdings, t: number): Decimal {
   const bound = (coin: string, qty: Decimal): Decimal => {
-    const list = (acc.candles["1h"].get(coin) ?? []) as unknown as Candle[];
-    const c = list.find((x) => x.t <= t && t <= x.T) ?? list.filter((x) => x.T < t).pop();
-    if (!c) throw new Error(`no 1h candle for ${coin} near ${t}`);
+    const c = candleAround(acc, coin, t);
+    if (!c) throw new Error(`no candle for ${coin} around ${new Date(t).toISOString()}`);
     return qty.abs().times(new Decimal(c.h).minus(c.l).plus(new Decimal(c.c).times("0.001")));
   };
   let b = ZERO;
@@ -60,16 +68,45 @@ export interface Comparison {
   stakedHypeAtAnchor: string;
 }
 
-export function compare(dir: string, window = "month"): Comparison {
+// Price at an HL sample: last 1h close before it, or the last 1d close when hourly candles no
+// longer reach back that far (the API serves the 5000 most recent candles per interval).
+function samplePrice(acc: Account): PriceSource {
+  const h = priceSource(acc, "1h");
+  const dd = priceSource(acc, "1d");
+  const pick = (coin: string, t: number) => {
+    const list = acc.candles["1h"].get(coin);
+    return list && list.length > 0 && list[0]!.t <= t - 3_600_000 ? h.price(coin, t) : dd.price(coin, t);
+  };
+  const src: PriceSource = {
+    staleness: 0,
+    price: pick,
+    tokenPrice(token, t) {
+      if (token === "USDC") return new Decimal(1);
+      const pair = usdcPairOf(acc, token);
+      if (!pair) throw new Error(`token ${token} has no USDC pair`);
+      return pick(pair, t);
+    },
+  };
+  return src;
+}
+
+export function compare(dir: string, preferred = "month"): Comparison {
   const { snapshot } = loadSnapshot(dir);
   const acc = buildAccount(snapshot);
   const from = Date.parse(snapshot.meta.from + "T00:00:00Z");
-  const series = acc.portfolio.find(([k]) => k === window)?.[1];
-  if (!series) throw new Error(`portfolio has no ${window} window`);
-  const av = series.accountValueHistory.filter(([t]) => t >= from && t <= acc.anchorTime);
+  // Use HL's month window when it overlaps the snapshot, else allTime (coarser, older).
+  let window = preferred;
+  let series = acc.portfolio.find(([k]) => k === window)?.[1];
+  let av = (series?.accountValueHistory ?? []).filter(([t]) => t >= from && t <= acc.anchorTime);
+  if (av.length < 2 || av[0]![0] > from + 2 * 86_400_000) {
+    window = "allTime";
+    series = acc.portfolio.find(([k]) => k === window)?.[1];
+    av = (series?.accountValueHistory ?? []).filter(([t]) => t >= from && t <= acc.anchorTime);
+  }
+  if (!series) throw new Error("portfolio has no usable window");
   const pnl = new Map(series.pnlHistory.map(([t, v]) => [t, v]));
   if (av.length < 2) throw new Error("fewer than 2 HL samples inside the snapshot");
-  const px = priceSource(acc, "1h");
+  const px = samplePrice(acc);
   const ours = av.map(([t, v]) => {
     const h = holdingsAt(acc, t + 1); // HL's sample includes events at its timestamp
     return { t, hl: new Decimal(v), ours: equityOf(h, t, px), h };
