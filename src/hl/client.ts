@@ -6,7 +6,7 @@ const SAFETY = 0.6; // stay well under the limit
 
 // Base weights from the rate limit docs.
 const LIGHT = new Set(["l2Book", "allMids", "clearinghouseState", "orderStatus", "spotClearinghouseState", "exchangeStatus"]);
-const PER20 = new Set(["userFills", "userFillsByTime", "userFunding", "historicalOrders", "fundingHistory", "userTwapSliceFills"]);
+const PER20 = new Set(["userFills", "userFillsByTime", "userFunding", "historicalOrders", "fundingHistory", "userTwapSliceFills", "userTwapSliceFillsByTime"]);
 
 export interface InfoResponse {
   body: Record<string, unknown>;

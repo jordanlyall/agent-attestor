@@ -11,7 +11,7 @@
 // positions are valued at the last candle close before the mark (see methodology.md).
 import { Decimal, ZERO, d } from "./decimal.js";
 import type { Snapshot } from "./snapshot.js";
-import type { SpotMetaRaw } from "./indexer.js";
+import type { SpotMetaRaw, TwapHistoryRow } from "./indexer.js";
 import { safeName, usdcPair } from "./indexer.js";
 
 export class UnsupportedError extends Error {
@@ -36,6 +36,7 @@ export interface Fill {
   feeToken: string;
   startPosition: Decimal;
   dir: string;
+  twapId: number | null; // from the slice wrapper; the nested fill.twapId is null on slices
   key: string;
 }
 
@@ -45,6 +46,7 @@ export interface Funding {
   coin: string;
   token: string;
   usdc: Decimal;
+  szi: Decimal | null; // position size HL charged on; null for daily aggregates (nSamples set)
   key: string;
 }
 
@@ -81,6 +83,7 @@ export interface Account {
   candles: { "1d": Map<string, Candle[]>; "1h": Map<string, Candle[]> };
   collateral: Map<string, string>; // dex name ("" default) -> collateral token name
   extras: { vaultEquityUsd: Decimal; stakedHype: Decimal };
+  twapHistory: TwapHistoryRow[];
   portfolio: [string, { accountValueHistory: [number, string][]; pnlHistory: [number, string][]; vlm: string }][];
 }
 
@@ -162,13 +165,12 @@ export function buildAccount(snap: Snapshot): Account {
     return [...seen.values()];
   };
   const events: Event[] = [];
-  for (const f of rows("userFillsByTime")) {
-    const key = JSON.stringify(f);
+  const fillEvent = (f: any, twapId: number | null, key: string): Fill => {
     const sz = d(f.sz);
     const signedSz = f.side === "B" ? sz : f.side === "A" ? sz.neg() : null;
     if (!signedSz) throw new UnsupportedError(`fill side ${f.side}`);
     const pair = pairs.get(f.coin);
-    events.push({
+    return {
       kind: "fill",
       time: f.time,
       coin: f.coin,
@@ -181,12 +183,28 @@ export function buildAccount(snap: Snapshot): Account {
       feeToken: f.feeToken,
       startPosition: d(f.startPosition),
       dir: f.dir,
+      twapId,
       key,
-    });
+    };
+  };
+  // TWAP slices come from their own endpoint. If the regular stream also serves one, use it once
+  // and keep the twapId from the slice wrapper.
+  const fillId = (f: any) => `${f.coin}|${f.tid}|${f.oid}`;
+  const slices = new Map<string, any>();
+  for (const w of rows("userTwapSliceFillsByTime")) {
+    if (typeof w.twapId !== "number") throw new UnsupportedError(`TWAP slice without twapId: ${JSON.stringify(w)}`);
+    slices.set(fillId(w.fill), w);
   }
+  for (const f of rows("userFillsByTime")) {
+    const w = slices.get(fillId(f));
+    slices.delete(fillId(f));
+    events.push(fillEvent(f, w ? w.twapId : null, JSON.stringify(f)));
+  }
+  for (const w of slices.values()) events.push(fillEvent(w.fill, w.twapId, JSON.stringify(w)));
   for (const f of rows("userFunding")) {
     if (f.delta.type !== "funding") throw new UnsupportedError(`funding delta type ${f.delta.type}`);
-    events.push({ kind: "funding", time: f.time, coin: f.delta.coin, token: collateralOf(f.delta.coin), usdc: d(f.delta.usdc), key: JSON.stringify(f) });
+    const hourly = f.delta.nSamples === null || f.delta.nSamples === undefined;
+    events.push({ kind: "funding", time: f.time, coin: f.delta.coin, token: collateralOf(f.delta.coin), usdc: d(f.delta.usdc), szi: hourly ? d(f.delta.szi) : null, key: JSON.stringify(f) });
   }
   for (const l of rows("userNonFundingLedgerUpdates")) events.push(ledgerEvent(l, address));
 
@@ -219,6 +237,7 @@ export function buildAccount(snap: Snapshot): Account {
       vaultEquityUsd: vaults.reduce((a, v) => a.plus(d(v.equity)), ZERO),
       stakedHype: d(deleg?.delegated ?? "0").plus(d(deleg?.totalPendingWithdrawal ?? "0")),
     },
+    twapHistory: json(snap, "twapHistory.json"),
     portfolio: json(snap, "portfolio.json"),
   };
 }
@@ -401,9 +420,13 @@ export function usdcPairOf(acc: Account, token: string): string | undefined {
 
 // Below this, a startPosition difference is rounding dust HL applies without an event.
 export const DUST = new Decimal("0.000001");
+const HOUR = 3_600_000;
+const DAY = 86_400_000;
+const FUNDING_SETTLE_MS = 60_000; // funding rows land shortly after the hour
 
 export interface PositionCheck {
   checks: number;
+  fundingChecks: number;
   dust: number;
   maxDust: Decimal;
 }
@@ -414,8 +437,44 @@ export interface PositionCheck {
 export function checkPositions(acc: Account, from: number): PositionCheck {
   const h = holdingsAt(acc, from);
   let checks = 0;
+  let fundingChecks = 0;
   let dust = 0;
   let maxDust = ZERO;
+  // HL charges funding every hour on every open perp position and states the size it charged
+  // on. At each hour, every position the replay holds must have a funding row of that size, and
+  // every hourly row must match a held position. This catches a missing opening fill, which the
+  // startPosition check cannot see: undoing the later close invents the position earlier, and
+  // that agrees with every startPosition. Older funding comes as one row per coin per day
+  // (nSamples set, no usable size); such a day only proves the position existed that day.
+  const hourly = new Map<string, Decimal>();
+  const daily = new Set<string>();
+  for (const e of acc.events) {
+    if (e.kind !== "funding") continue;
+    if (e.szi) hourly.set(`${e.coin}|${Math.floor(e.time / HOUR) * HOUR}`, e.szi);
+    else daily.add(`${e.coin}|${Math.floor(e.time / DAY) * DAY}`);
+  }
+  const coinsWithRows = new Map<number, string[]>();
+  for (const k of hourly.keys()) {
+    const [coin, t] = k.split("|") as [string, string];
+    const list = coinsWithRows.get(Number(t)) ?? [];
+    list.push(coin);
+    coinsWithRows.set(Number(t), list);
+  }
+  const checkHour = (t: number) => {
+    const coins = new Set([...h.perps.keys(), ...(coinsWithRows.get(t) ?? [])]);
+    for (const coin of coins) {
+      const held = h.perps.get(coin) ?? ZERO;
+      const charged = hourly.get(`${coin}|${t}`);
+      if (charged === undefined && daily.has(`${coin}|${Math.floor(t / DAY) * DAY}`)) continue;
+      fundingChecks++;
+      if (held.minus(charged ?? ZERO).abs().gt(DUST))
+        throw new UnsupportedError(
+          `replay disagrees with HL funding at ${new Date(t).toISOString()} ${coin}: replay holds ${held.toString()}, HL charged funding on ${charged === undefined ? "nothing" : charged.toString()}. A fill is missing.`,
+        );
+    }
+  };
+  let hour = Math.ceil(from / HOUR) * HOUR;
+  const lastHour = acc.anchorTime - FUNDING_SETTLE_MS;
   for (const e of acc.events) {
     if (e.time < from) continue;
     if (e.kind === "fill") {
@@ -431,7 +490,56 @@ export function checkPositions(acc: Account, from: number): PositionCheck {
         if (diff.gt(maxDust)) maxDust = diff;
       }
     }
+    while (hour <= e.time && hour < lastHour) checkHour(hour), (hour += HOUR);
     applyEvent(h, e, 1);
   }
-  return { checks, dust, maxDust };
+  while (hour < lastHour) checkHour(hour), (hour += HOUR);
+  return { checks, fundingChecks, dust, maxDust };
+}
+
+export const TWAP_HISTORY_CAP = 2000;
+
+export interface TwapCheck {
+  orders: number;
+  slices: number;
+}
+
+// Every TWAP that ran during [from, anchor] must be fully covered: its served slices must add up
+// to the size twapHistory says it executed. The slice endpoint does not serve old slices, and a
+// missing slice before the first served one is invisible to the startPosition check.
+export function checkTwaps(acc: Account, from: number): TwapCheck {
+  const hist = acc.twapHistory;
+  if (hist.length >= TWAP_HISTORY_CAP && Math.min(...hist.map((r) => r.time * 1000)) >= from)
+    throw new UnsupportedError(`twapHistory is capped at ${TWAP_HISTORY_CAP} rows and does not reach back to the period start`);
+  const latest = new Map<number, TwapHistoryRow>();
+  for (const r of hist) {
+    if (r.twapId === undefined) {
+      if (r.time * 1000 >= from) throw new UnsupportedError(`twapHistory row without twapId inside the period: ${JSON.stringify(r)}`);
+      continue;
+    }
+    const cur = latest.get(r.twapId);
+    if (!cur || r.time > cur.time) latest.set(r.twapId, r);
+  }
+  const executed = new Map<number, Decimal>();
+  let slices = 0;
+  for (const e of acc.events) {
+    if (e.kind !== "fill" || e.twapId === null) continue;
+    executed.set(e.twapId, (executed.get(e.twapId) ?? ZERO).plus(e.signedSz.abs()));
+    if (e.time < from) continue;
+    slices++;
+    if (!latest.has(e.twapId)) throw new UnsupportedError(`TWAP slice at ${new Date(e.time).toISOString()} belongs to TWAP ${e.twapId}, which twapHistory does not list`);
+  }
+  let orders = 0;
+  for (const [id, r] of [...latest].sort((a, b) => a[0] - b[0])) {
+    const running = r.status.status === "activated";
+    if (!running && r.time * 1000 < from) continue;
+    orders++;
+    if (running) throw new UnsupportedError(`TWAP ${id} on ${r.state.coin} was still running when fetched; refetch after it ends`);
+    const got = executed.get(id) ?? ZERO;
+    if (!got.eq(d(r.state.executedSz)))
+      throw new UnsupportedError(
+        `TWAP ${id} on ${r.state.coin} (started ${new Date(r.state.timestamp).toISOString()}) executed ${r.state.executedSz} but HL serves slices for only ${got.toString()}. Its early slices are no longer public, so holdings before them cannot be rebuilt.`,
+      );
+  }
+  return { orders, slices };
 }

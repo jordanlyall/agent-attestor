@@ -1,11 +1,11 @@
 // attestor score: a pure function from snapshot to metrics.
 import { Decimal, ZERO, fixed, sum } from "./decimal.js";
 import type { Snapshot } from "./snapshot.js";
-import { buildAccount, applyEvent, checkPositions, equityOf, exposureOf, flowUsd, holdingsAt, priceSource, UnsupportedError, type Account, type FlowKind, type PriceSource } from "./replay.js";
+import { buildAccount, applyEvent, checkPositions, checkTwaps, equityOf, exposureOf, flowUsd, holdingsAt, priceSource, UnsupportedError, type Account, type FlowKind, type PriceSource } from "./replay.js";
 import { chain, dailyReturns, marksFor, maxDrawdown, sharpe, sortino, type Flow, type Mark } from "./metrics.js";
 import { DAY_MS, isoDate, parseDate } from "./time.js";
 
-export const METHODOLOGY_VERSION = "phase0-v4";
+export const METHODOLOGY_VERSION = "phase0-v5";
 const USD = 6;
 const RATIO = 10;
 
@@ -64,6 +64,7 @@ export function score(snap: Snapshot): Record<string, unknown> {
   let nFills = 0;
   let nFunding = 0;
   let nLedger = 0;
+  const twaps = checkTwaps(acc, from);
   const positions = checkPositions(acc, from);
 
   let i = acc.events.findIndex((e) => e.time >= from);
@@ -151,6 +152,9 @@ export function score(snap: Snapshot): Record<string, unknown> {
       fundingEvents: nFunding,
       ledgerEvents: nLedger,
       positionChecks: positions.checks,
+      fundingPositionChecks: positions.fundingChecks,
+      twapOrders: twaps.orders,
+      twapSlices: twaps.slices,
       positionDust: positions.dust,
       positionMaxDust: fixed(positions.maxDust, 12),
       staleMarks: markPx.staleness,

@@ -75,6 +75,23 @@ describe("score on the hand-built fixture", () => {
     expect(() => score(s)).toThrow(/without a public fill/);
   });
 
+  it("catches a missing opening fill that the startPosition check cannot see", () => {
+    // Drop the 01-01 buy. Undoing the 01-02 sell now invents 1 BTC from before the period, and
+    // that agrees with the sell's startPosition. HL charged no funding before 07:00, so the
+    // hourly funding check finds it.
+    const s = basicSnapshot();
+    s.files["userFillsByTime/0001.json"] = JSON.stringify(JSON.parse(s.files["userFillsByTime/0001.json"]!).slice(1));
+    expect(() => score(s)).toThrow(/2026-01-01T00:00:00.000Z BTC: replay holds 1, HL charged funding on nothing/);
+  });
+
+  it("stops when funding was charged on a position the replay does not hold", () => {
+    const s = basicSnapshot();
+    const rows = JSON.parse(s.files["userFunding/0001.json"]!);
+    rows.push({ time: Date.parse("2026-01-03T05:00:00Z"), hash: "0x0", delta: { type: "funding", coin: "BTC", usdc: "-1", szi: "0.5", fundingRate: "0.0", nSamples: null } });
+    s.files["userFunding/0001.json"] = JSON.stringify(rows);
+    expect(() => score(s)).toThrow(/replay holds 0, HL charged funding on 0.5/);
+  });
+
   it("gives the same metrics for a unified account", () => {
     const u = score(basicSnapshot("unifiedAccount")) as any;
     expect({ ...u, accountMode: "x" }).toEqual({ ...m, accountMode: "x" });
@@ -84,6 +101,51 @@ describe("score on the hand-built fixture", () => {
     const s = basicSnapshot();
     s.files["userNonFundingLedgerUpdates/0001.json"] = JSON.stringify([{ time: Date.parse("2026-01-02T00:00:00Z"), hash: "0x9", delta: { type: "borrowLend", token: "HYPE", operation: "supply", amount: "1", interestAmount: "0" } }]);
     expect(() => score(s)).toThrow(/borrowLend/);
+  });
+});
+
+describe("TWAP slices", () => {
+  // Move the 01-01 buy into the TWAP slice endpoint, shaped as HL serves it: a wrapper with the
+  // twapId, a zero hash and a null nested twapId.
+  const withTwap = (executedSz: string, status = "finished"): Snapshot => {
+    const s = basicSnapshot();
+    const fills = JSON.parse(s.files["userFillsByTime/0001.json"]!);
+    const open = { ...fills[0], hash: "0x" + "0".repeat(64), twapId: null };
+    s.files["userFillsByTime/0001.json"] = JSON.stringify(fills.slice(1));
+    s.files["userTwapSliceFillsByTime/0001.json"] = JSON.stringify([{ fill: open, twapId: 7 }]);
+    const started = Date.parse("2026-01-01T05:59:00Z");
+    s.files["twapHistory.json"] = JSON.stringify([
+      { time: Date.parse("2026-01-01T06:00:30Z") / 1000, state: { coin: "BTC", side: "B", sz: "1.0", executedSz, executedNtl: "50000.0", minutes: 5, timestamp: started }, status: { status }, twapId: 7 },
+    ]);
+    return s;
+  };
+
+  it("scores a TWAP opening exactly like the same fill from userFillsByTime", () => {
+    const t = score(withTwap("1.0")) as any;
+    expect(t.integrity.twapOrders).toBe(1);
+    expect(t.integrity.twapSlices).toBe(1);
+    expect({ ...t, integrity: null }).toEqual({ ...m, integrity: null });
+  });
+
+  it("counts a slice once when the regular fill stream also serves it", () => {
+    const s = withTwap("1.0");
+    s.files["userFillsByTime/0001.json"] = basicSnapshot().files["userFillsByTime/0001.json"]!;
+    const t = score(s) as any;
+    expect({ ...t, integrity: null }).toEqual({ ...m, integrity: null });
+  });
+
+  it("refuses a TWAP whose early slices are no longer served", () => {
+    expect(() => score(withTwap("2.0"))).toThrow(/TWAP 7 on BTC .* executed 2.0 but HL serves slices for only 1/);
+  });
+
+  it("refuses a TWAP still running at the anchor", () => {
+    expect(() => score(withTwap("0.0", "activated"))).toThrow(/TWAP 7 on BTC was still running/);
+  });
+
+  it("refuses a slice whose TWAP is not in twapHistory", () => {
+    const s = withTwap("1.0");
+    s.files["twapHistory.json"] = "[]";
+    expect(() => score(s)).toThrow(/belongs to TWAP 7, which twapHistory does not list/);
   });
 });
 
@@ -100,7 +162,7 @@ describe("determinism", () => {
     const b = canonicalJson(score(shuffled(basicSnapshot())));
     expect(b).toBe(a);
     // Locked so that any change to the output is deliberate. Update with a methodology bump.
-    expect(sha256(a)).toBe("0f3d1732254e9c3405e63d12dfecf353f62be30c5aef9a5998d57293b55977f8");
+    expect(sha256(a)).toBe("47808fdbb8b267632d55feb8c0723482a77772afff00d7bb3b1eec17d521cdd1");
   });
 
   it("writes no timestamps or floats", () => {

@@ -3,7 +3,8 @@
 //
 // Start (before 2026-01-01 00:00): 10,000 USDC, no positions.
 // 01-01 06:00  buy 1 BTC @ 50,000, fee 20
-// 01-01 08:00  funding -5
+// 01-01 08:00  funding -5 (HL posts a funding row every hour the position is open; the others
+//              are 0 here so the hand math stays simple)
 // 01-02 00:00  mark: BTC daily close 51,000. cash -40,025 + 51,000          = 10,975
 // 01-02 12:00  deposit 5,000. Valued around the flow at the 11:00-11:59 hourly close 51,500:
 //              before -40,025 + 51,500 = 11,475, after 16,475
@@ -36,6 +37,21 @@ const fill = (time: string, side: "B" | "A", px: string, sz: string, fee: string
   feeToken: "USDC",
 });
 
+const HOUR = 3_600_000;
+// One row per hour while BTC is held: 01-01 07:00 to 01-02 18:00 (1 BTC), 01-04 06:00 to 23:00 (0.1).
+function hourlyFunding(): unknown[] {
+  const rows: unknown[] = [];
+  const span = (a: string, b: string, szi: string) => {
+    for (let h = t(a); h <= t(b); h += HOUR) {
+      const usdc = h === t("2026-01-01T08:00:00Z") ? "-5" : "0.0";
+      rows.push({ time: h, hash: "0x" + "0".repeat(64), delta: { type: "funding", coin: "BTC", usdc, szi, fundingRate: "0.0", nSamples: null } });
+    }
+  };
+  span("2026-01-01T07:00:00Z", "2026-01-02T18:00:00Z", "1.0");
+  span("2026-01-04T06:00:00Z", "2026-01-04T23:00:00Z", "0.1");
+  return rows;
+}
+
 const candle = (day: string, c: string) => ({ t: t(day + "T00:00:00Z"), T: t(day + "T00:00:00Z") + 86_399_999, s: "BTC", i: "1d", o: c, c, h: c, l: c, v: "1", n: 1 });
 
 export type Mode = "default" | "unifiedAccount";
@@ -63,9 +79,8 @@ export function basicSnapshot(mode: Mode = "default"): Snapshot {
       fill("2026-01-02T18:00:00Z", "A", "52000", "1", "20.8", "1"),
       fill("2026-01-04T05:00:00Z", "B", "53000", "0.1", "2", "0"),
     ],
-    "userFunding/0001.json": [
-      { time: t("2026-01-01T08:00:00Z"), hash: "0x0", delta: { type: "funding", coin: "BTC", usdc: "-5", szi: "1", fundingRate: "0.0001", nSamples: 1 } },
-    ],
+    "userFunding/0001.json": hourlyFunding(),
+    "twapHistory.json": [],
     "userNonFundingLedgerUpdates/0001.json": [
       { time: t("2026-01-02T12:00:00Z"), hash: "0x1", delta: { type: "deposit", usdc: "5000" } },
       { time: t("2026-01-03T06:00:00Z"), hash: "0x2", delta: { type: "withdraw", usdc: "1000", nonce: 1, fee: "1" } },

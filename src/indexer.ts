@@ -39,14 +39,14 @@ class Stream {
   pages: Saved[] = [];
   private seen = new Set<string>();
   private next: number;
-  constructor(private client: InfoClient, private type: string, private user: string, start: number) {
+  constructor(private client: InfoClient, private type: string, private user: string, start: number, private timeOf: (r: any) => number = (r) => r.time) {
     this.next = start;
   }
   // Pull pages until the API returns nothing new.
   async drain(): Promise<void> {
     for (;;) {
       const resp = await this.client.post({ type: this.type, user: this.user, startTime: this.next });
-      const rows = JSON.parse(resp.text) as { time: number }[];
+      const rows = JSON.parse(resp.text) as unknown[];
       this.pages.push({ file: `${this.type}/${String(this.pages.length + 1).padStart(4, "0")}.json`, resp });
       let fresh = 0;
       let maxT = this.next;
@@ -56,7 +56,7 @@ class Stream {
           this.seen.add(k);
           fresh++;
         }
-        if (r.time > maxT) maxT = r.time;
+        if (this.timeOf(r) > maxT) maxT = this.timeOf(r);
       }
       if (fresh === 0) return;
       this.next = maxT;
@@ -64,8 +64,7 @@ class Stream {
   }
   timesNear(t: number, w: number): boolean {
     for (const k of this.seen) {
-      const r = JSON.parse(k) as { time: number };
-      if (Math.abs(r.time - t) <= w) return true;
+      if (Math.abs(this.timeOf(JSON.parse(k)) - t) <= w) return true;
     }
     return false;
   }
@@ -101,8 +100,13 @@ export async function fetchSnapshot(opts: FetchOptions): Promise<string> {
   const dexes = (JSON.parse(perpDexsResp.text) as ({ name: string } | null)[]).map((x) => (x ? x.name : ""));
   for (const dex of dexes) save(`meta/${dex ? safeName(dex) : "_default"}.json`, await client.post({ type: "meta", dex }));
 
-  log(`events since ${opts.from}`);
+  // TWAP slices are served only by their own endpoint, never by userFillsByTime. Start early
+  // enough to cover every TWAP still running at the period start, so the scorer can check that
+  // each order's slices add up to what twapHistory says it executed.
+  const twapStart = Math.min(fromMs, ...twapStartsOverlapping(JSON.parse((await client.post({ type: "twapHistory", user })).text), fromMs));
+  log(`events since ${opts.from} (TWAP slices since ${new Date(twapStart).toISOString()})`);
   const streams = ["userFillsByTime", "userFunding", "userNonFundingLedgerUpdates"].map((t) => new Stream(client, t, user, fromMs));
+  streams.push(new Stream(client, "userTwapSliceFillsByTime", user, twapStart, (r) => r.fill.time));
   for (const s of streams) await s.drain();
 
   // Anchor: current account state. Events are walked back from here, so the anchor and the
@@ -117,6 +121,7 @@ export async function fetchSnapshot(opts: FetchOptions): Promise<string> {
       ["portfolio.json", { type: "portfolio", user }],
       ["userVaultEquities.json", { type: "userVaultEquities", user }],
       ["delegatorSummary.json", { type: "delegatorSummary", user }],
+      ["twapHistory.json", { type: "twapHistory", user }],
     ];
     const resps = await Promise.all(reqs.map(([, b]) => client.post(b)));
     anchor = reqs.map(([file], i) => ({ file, resp: resps[i]! }));
@@ -134,8 +139,9 @@ export async function fetchSnapshot(opts: FetchOptions): Promise<string> {
   // Prices: candles for every coin traded or held, plus each held token's USDC pair.
   const spotMeta = JSON.parse(saved.find((x) => x.file === "spotMeta.json")!.resp.text) as SpotMetaRaw;
   const coins = new Set<string>();
-  const [fills, funding, ledger] = streams.map((s) => s.rows());
+  const [fills, funding, ledger, twaps] = streams.map((s) => s.rows());
   for (const f of fills!) coins.add(f.coin);
+  for (const w of twaps!) coins.add(w.fill.coin);
   for (const f of funding!) coins.add(f.delta.coin);
   for (const a of anchor) {
     if (a.file.startsWith("clearinghouseState/")) for (const p of JSON.parse(a.resp.text).assetPositions) coins.add(p.position.coin);
@@ -187,6 +193,24 @@ export async function fetchSnapshot(opts: FetchOptions): Promise<string> {
   writeFileSync(join(dir, "SHA256SUMS"), sums.join("\n") + "\n");
   log(`wrote ${files.length} files to ${dir}`);
   return dir;
+}
+
+export interface TwapHistoryRow {
+  time: number; // seconds
+  state: { coin: string; sz: string; executedSz: string; timestamp: number };
+  status: { status: string; description?: string };
+  twapId?: number;
+}
+
+// Start times (ms) of TWAPs that were running at or after `fromMs`.
+export function twapStartsOverlapping(history: TwapHistoryRow[], fromMs: number): number[] {
+  const latest = new Map<string, TwapHistoryRow>();
+  for (const r of history) {
+    const k = String(r.twapId ?? `${r.state.coin}@${r.state.timestamp}`);
+    const cur = latest.get(k);
+    if (!cur || r.time > cur.time) latest.set(k, r);
+  }
+  return [...latest.values()].filter((r) => r.status.status === "activated" || r.time * 1000 >= fromMs).map((r) => r.state.timestamp);
 }
 
 export interface SpotMetaRaw {
