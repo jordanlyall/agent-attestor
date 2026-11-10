@@ -1,0 +1,98 @@
+// Pure return math on a daily equity series. No IO, no floats.
+import { Decimal, ONE, ZERO, sum } from "./decimal.js";
+import { DAY_MS } from "./time.js";
+
+export interface Mark {
+  time: number; // 00:00 UTC
+  equity: Decimal;
+}
+
+export interface Flow {
+  time: number;
+  usd: Decimal; // + into the account, - out of it
+}
+
+export interface DayReturn {
+  start: number;
+  end: number;
+  startEquity: Decimal;
+  endEquity: Decimal;
+  flows: Decimal;
+  ret: Decimal | null; // null: no capital at risk that day
+}
+
+// Modified Dietz within each day: a flow at time t is weighted by the share of the day left
+// after it. A deposit at 00:00 counts fully, one at 23:59 barely at all.
+//   r = (E1 - E0 - F) / (E0 + sum(w_i * F_i)),  w_i = (dayEnd - t_i) / dayLength
+// A flow belongs to the day [start, end) that contains it.
+export function dailyReturns(marks: Mark[], flows: Flow[]): DayReturn[] {
+  const out: DayReturn[] = [];
+  const sorted = [...flows].sort((a, b) => a.time - b.time);
+  let j = 0;
+  for (let i = 0; i + 1 < marks.length; i++) {
+    const a = marks[i]!;
+    const b = marks[i + 1]!;
+    while (j < sorted.length && sorted[j]!.time < a.time) j++;
+    let f = ZERO;
+    let w = ZERO;
+    const len = new Decimal(b.time - a.time);
+    while (j < sorted.length && sorted[j]!.time < b.time) {
+      const x = sorted[j]!;
+      f = f.plus(x.usd);
+      w = w.plus(x.usd.times(new Decimal(b.time - x.time)).div(len));
+      j++;
+    }
+    const denom = a.equity.plus(w);
+    const ret = denom.lte(0) ? null : b.equity.minus(a.equity).minus(f).div(denom);
+    out.push({ start: a.time, end: b.time, startEquity: a.equity, endEquity: b.equity, flows: f, ret });
+  }
+  return out;
+}
+
+export function chain(rets: (Decimal | null)[]): Decimal {
+  return rets.reduce<Decimal>((acc, r) => (r === null ? acc : acc.times(ONE.plus(r))), ONE).minus(ONE);
+}
+
+// Largest peak-to-trough fall of the return index, as a positive fraction.
+export function maxDrawdown(rets: (Decimal | null)[]): Decimal {
+  let idx = ONE;
+  let peak = ONE;
+  let worst = ZERO;
+  for (const r of rets) {
+    if (r !== null) idx = idx.times(ONE.plus(r));
+    if (idx.gt(peak)) peak = idx;
+    const dd = peak.minus(idx).div(peak);
+    if (dd.gt(worst)) worst = dd;
+  }
+  return worst;
+}
+
+export const MIN_OBS = 30;
+const ANNUAL = new Decimal(365).sqrt();
+
+// Sharpe: mean / sample stdev of daily returns, times sqrt(365). Risk-free rate 0.
+export function sharpe(rets: Decimal[]): Decimal | null {
+  const n = rets.length;
+  if (n < MIN_OBS) return null;
+  const mean = sum(rets).div(n);
+  const variance = sum(rets.map((r) => r.minus(mean).pow(2))).div(n - 1);
+  if (variance.isZero()) return null;
+  return mean.div(variance.sqrt()).times(ANNUAL);
+}
+
+// Sortino: mean / downside deviation, times sqrt(365). Downside deviation uses a 0 target
+// and divides by all n observations.
+export function sortino(rets: Decimal[]): Decimal | null {
+  const n = rets.length;
+  if (n < MIN_OBS) return null;
+  const mean = sum(rets).div(n);
+  const dd = sum(rets.map((r) => (r.isNeg() ? r.pow(2) : ZERO))).div(n);
+  if (dd.isZero()) return null;
+  return mean.div(dd.sqrt()).times(ANNUAL);
+}
+
+export function marksFor(from: number, to: number): number[] {
+  const out: number[] = [];
+  for (let t = from; t <= to; t += DAY_MS) out.push(t);
+  return out;
+}

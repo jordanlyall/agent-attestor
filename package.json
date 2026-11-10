@@ -1,0 +1,28 @@
+{
+  "name": "agent-attestor",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Recompute a Hyperliquid account's performance from public data, reproducibly.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "attestor": "./bin/attestor.mjs"
+  },
+  "scripts": {
+    "attestor": "tsx src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "decimal.js": "10.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}
