@@ -58,7 +58,7 @@
       },
       "maxDrawdown": "0.0948949804",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -76,7 +76,7 @@
       "turnover": "71.7353254196",
       "twrNet": "-0.0460970916"
     },
-    "metricsHash": "4b30c02a5f71ecab0d8a42bdff4b83ffb7f4581bf67e88b528061f3419f97b97",
+    "metricsHash": "5907a1c8216c718328faab85349cffaa6b0b6ae00773110f5e2ca5c8187f3758",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -139,7 +139,7 @@
       },
       "maxDrawdown": "0.1255381474",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -157,7 +157,7 @@
       "turnover": "39.3279041308",
       "twrNet": "0.1709207469"
     },
-    "metricsHash": "746a62f8c225d92e49ba5cf201956993be850fc460bbc2e103651c6ae73a8db9",
+    "metricsHash": "507ae1a085e0e39062dd4cdb6c08d5b738fd86dfdc9211e2ed8ab80e8491963f",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -220,7 +220,7 @@
       },
       "maxDrawdown": "0.0712914729",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -238,7 +238,7 @@
       "turnover": "14.7039606375",
       "twrNet": "0.0299839005"
     },
-    "metricsHash": "df23bc6fed8253d2dfff70f1013eab903fd4d7e74e309ad62e7444cbde8b813c",
+    "metricsHash": "7f06a430a239fc1849654ac4cb15b3778b6c0706a7821f216fb2117e9f22b303",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -301,7 +301,7 @@
       },
       "maxDrawdown": "0.1472316045",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -319,7 +319,7 @@
       "turnover": "41.8630237022",
       "twrNet": "-0.0473754718"
     },
-    "metricsHash": "726473c7fbfb2a5d6386cbd4ab4293b7bb41d82823d2df344b80fe3c445fb064",
+    "metricsHash": "e69b21139dd12f9883141f92988997fb52f0a33487b635fbe406a979805b8d19",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -382,7 +382,7 @@
       },
       "maxDrawdown": "0.3706636633",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -400,7 +400,7 @@
       "turnover": "30.3600522745",
       "twrNet": "-0.2507264370"
     },
-    "metricsHash": "281342ff442593d5ea5f435430705d58e8399ff5ae0730f2bd58d0eda64df1a1",
+    "metricsHash": "4183db9dbeec799f949017e4b103776d8200b0a0329b1fc2a7e003f94bb8eca2",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -479,7 +479,7 @@
       },
       "maxDrawdown": "0.1500075393",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -497,7 +497,7 @@
       "turnover": "10.6911662457",
       "twrNet": "-0.0084051347"
     },
-    "metricsHash": "b8f2e35a36ad5cd624d78c5450150275947764eb65327a4a0c2df9d380a0e06b",
+    "metricsHash": "4ba46e4a6d3f4394b99bf411e0dfb3f236d1946c4f2de359291e9263e5e78437",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -560,7 +560,7 @@
       },
       "maxDrawdown": "0.3690923990",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -578,7 +578,7 @@
       "turnover": "23.6543677834",
       "twrNet": "0.0949783111"
     },
-    "metricsHash": "73c35f736992ae9acc016f35a5c5931d22ee4f4fa5ab56acb4863aa7a911c183",
+    "metricsHash": "9a233b5af73714d87706764d0136db0612db8bc33b95b0141fd259195b5ece75",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -641,7 +641,7 @@
       },
       "maxDrawdown": "0.0000003420",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -659,7 +659,7 @@
       "turnover": "7.0719476829",
       "twrNet": "0.0366914444"
     },
-    "metricsHash": "a95296fc23afa1d4ff8ee42f586644be744bec91e95e08b20f3dc041a298ba5b",
+    "metricsHash": "4933ab98cefed1d03972369cff32bf850a253054626d14d94dbe1c0c7b99baff",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -722,7 +722,7 @@
       },
       "maxDrawdown": "0.0702968049",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -740,7 +740,7 @@
       "turnover": "18.0056701100",
       "twrNet": "-0.0356005086"
     },
-    "metricsHash": "d1a716c54e8528d806443e85db6cde6ac32a289d3386b51974f8afc1afe203b9",
+    "metricsHash": "3c80208e7aeb04d7d1ffe1ff584f966e8c119ac6e2eda37d755d99829df37188",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -803,7 +803,7 @@
       },
       "maxDrawdown": "0.8727520337",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -821,7 +821,7 @@
       "turnover": "1159.1829620776",
       "twrNet": "-0.7309511960"
     },
-    "metricsHash": "aee9a5e17ec7e90d2e289a4662f5a5ad7051b6b45d4549e4b20a97ace932cdc2",
+    "metricsHash": "e4091f5b304e22ad9dbc515e12b6232713f8d6314ecd5ecf0699752aa731474d",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -884,7 +884,7 @@
       },
       "maxDrawdown": "0.7260179940",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -902,7 +902,7 @@
       "turnover": "19.3442196265",
       "twrNet": "-0.7080227476"
     },
-    "metricsHash": "2b5c3f2e6bf4e6729ae99f93e209f68ae78f4d89e4dbfc525f717d26034fd5cf",
+    "metricsHash": "cf025d1ed61f067b6a94d207b05baac4b254f2a440478f3271f4d8abd7676803",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -965,7 +965,7 @@
       },
       "maxDrawdown": "0.0000000000",
       "meetsMinimums": false,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -983,7 +983,7 @@
       "turnover": "0.0000000000",
       "twrNet": "0.0000000000"
     },
-    "metricsHash": "3bfa782ec09d155d74f0b8ff4515c70f6efabf1f2110b31477275430a664f310",
+    "metricsHash": "fc8ca93c66aee7a8f82f6f3a01d46533459c019789e3bcb63276c52f608d9b6e",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -1046,7 +1046,7 @@
       },
       "maxDrawdown": "0.0294634969",
       "meetsMinimums": true,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1064,7 +1064,7 @@
       "turnover": "1495.9999544828",
       "twrNet": "0.2667315702"
     },
-    "metricsHash": "69b0288d4f9f3c2522ee2f5d6cecd852b635c561781a2e066767afd8c1a4abd4",
+    "metricsHash": "6be96809d3fa76fb79ce6ee4f91cf07b08ea40ac62f0c59647a6fdf0c01ad812",
     "source": "leaderboard",
     "to": "2026-11-10"
   },
@@ -1127,7 +1127,7 @@
       },
       "maxDrawdown": "0.4993156166",
       "meetsMinimums": false,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1145,7 +1145,7 @@
       "turnover": "133.8789141174",
       "twrNet": "0.1202556402"
     },
-    "metricsHash": "a913517cb0d278bdacc66ded6d561bbc5eba56ec7de7bd71f3f8918bfaff9275",
+    "metricsHash": "84e9d57ffe71233a46eb1a892d560be94a597864e75620985c0e45e64e66b581",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1208,7 +1208,7 @@
       },
       "maxDrawdown": "0.4045370983",
       "meetsMinimums": false,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1226,7 +1226,7 @@
       "turnover": "326.6195290802",
       "twrNet": "0.2782386315"
     },
-    "metricsHash": "17377b741902ec117b0599be1749221c6bf266f1500445bf9b2f73455c043fc9",
+    "metricsHash": "022de2dabff7f038841bfb3fefa38519a7fcba5b2f7d9f49e5dbb29e965743d2",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1289,7 +1289,7 @@
       },
       "maxDrawdown": "0.5760191433",
       "meetsMinimums": false,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1307,7 +1307,7 @@
       "turnover": "106.3195771253",
       "twrNet": "-0.4389065905"
     },
-    "metricsHash": "9beee2421010686d8eaa54cc648aa4bee9a0f1c63aea8bd33f2fc67f4699aeb8",
+    "metricsHash": "c9fbae283617d982d5ef2a0879454a4ba318606f64e1ee752a3928b125e55e5e",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1370,7 +1370,7 @@
       },
       "maxDrawdown": "0.7781247253",
       "meetsMinimums": false,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1388,7 +1388,7 @@
       "turnover": "333.3750187150",
       "twrNet": "-0.6597179065"
     },
-    "metricsHash": "6d8085a481e188c7eee1973039e2b524fbead3a8aacf8bdcecceacb5bfdc834e",
+    "metricsHash": "d833864eb21df78973835dd100ab95fbb320781213a423d4a25dff535bdd977d",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1451,7 +1451,7 @@
       },
       "maxDrawdown": "0.7508322584",
       "meetsMinimums": false,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1469,7 +1469,7 @@
       "turnover": "638.5076007240",
       "twrNet": "-0.6075449789"
     },
-    "metricsHash": "41abda0fe21ee5a22bfcadcaca15923ed0603ec442d8f701c7a677df260bb398",
+    "metricsHash": "c8c49f94a199b541d7c13327ba98954797b3aee3a19c488842d2e7622402b349",
     "source": "alpha-arena",
     "to": "2025-11-04"
   },
@@ -1532,7 +1532,7 @@
       },
       "maxDrawdown": "0.4499646311",
       "meetsMinimums": false,
-      "methodology": "phase0-v6",
+      "methodology": "phase0-v7",
       "nonTradingIncome": {
         "usd": "0.000000"
       },
@@ -1550,7 +1550,7 @@
       "turnover": "156.5748224545",
       "twrNet": "-0.3050416339"
     },
-    "metricsHash": "e4e97786daa6d81e54e3c7ee5fef3f4d36ce894d908125543241e3194b964330",
+    "metricsHash": "93b179929d7b4190752e0a49e9940607ccd9a1736409d90a142cb68fbcc8d5e8",
     "source": "alpha-arena",
     "to": "2025-11-04"
   }

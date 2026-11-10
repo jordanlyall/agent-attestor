@@ -1,4 +1,4 @@
-# Methodology (phase0-v6)
+# Methodology (phase0-v7)
 
 The scorer turns a snapshot of raw public API responses into metrics. It is a pure function: no
 network, no clock, no randomness. Every number is a `decimal.js` decimal (60 significant digits,
@@ -61,7 +61,11 @@ from the period start to the anchor; any failure stops scoring with an error.
    `twapHistory` that hits its 2000-row cap without reaching the period start also stop scoring.
 
 Spot balances have no hourly check, so a missing spot fill outside a TWAP is caught only by
-check 1.
+check 1. Section 8 lists what all three checks miss.
+
+When a regular fill and a TWAP slice share a millisecond and a coin, nothing in the two streams
+says which executed first. They are ordered by HL's `startPosition` chain (each starts where the
+previous ended); a chain that is not unique stops scoring.
 
 The fetcher refuses to anchor while events land within 5 s of the anchor time (it retries up to 6
 times), so the anchor and the event streams agree.
@@ -210,9 +214,19 @@ cash or flows: if the replay missed a fee or a transfer, the miss shows.
 - Spam or illiquid spot tokens are valued at their last trade, which may not be how HL values them.
 - `borrowLend`, unknown ledger types, and tokens without a USDC pair stop scoring.
 - Vault and staking value is outside the scored account; HL's portfolio may include it.
-- If HL's 10,000-fill cap applies to an account, early fills are missing. The checks in section 2
-  catch this for perps and TWAPs; a missing ordinary spot fill is caught only when a later spot
-  fill's `startPosition` disagrees.
+- **The completeness checks do not prove a complete history** (found by a Codex review,
+  2026-11-10). Two kinds of missing perp fill pass every check: a trade opened and closed inside
+  one hour (zero net size, so every startPosition and funding size still agrees), and a missing
+  opening on a day HL serves funding as one daily row (no hourly size to compare). Removing one
+  such fill from a real saved snapshot moved its starting equity by $17 and still scored. So if
+  HL's 10,000-fill cap ever applies, the checks may not catch it, for perps or spot.
+- **Funding compaction can shift the return slightly.** HL rolls old hourly funding into one row
+  per day, booked at 00:00. On a day that also has an external flow, funding paid after the flow
+  then counts as paid before it. Dollars, PnL and fees are unchanged; twrNet moved by 0.0002 on
+  the case tried, and `verify` would show it as a twrNet diff after a refetch. Booking all
+  funding at day end instead was tried and rejected: on accounts that sweep most of their money
+  out within a day it charged the day's funding against the small balance left, moving one
+  wallet's TWR from -4.7% to +13.3%.
 - A TWAP that started before the slice endpoint's retention cannot be scored, even when the
   missing slices are outside the period: the endpoint does not say which ones are gone.
 - **No completeness check for ordinary spot fills.** Perps have hourly funding rows to check

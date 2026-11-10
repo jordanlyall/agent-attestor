@@ -5,7 +5,7 @@ import { buildAccount, applyEvent, checkPositions, checkTwaps, equityOf, exposur
 import { chain, dailyReturns, marksFor, maxDrawdown, sharpe, sortino, type Flow, type Mark } from "./metrics.js";
 import { DAY_MS, isoDate, parseDate } from "./time.js";
 
-export const METHODOLOGY_VERSION = "phase0-v6";
+export const METHODOLOGY_VERSION = "phase0-v7";
 const USD = 6;
 const RATIO = 10;
 

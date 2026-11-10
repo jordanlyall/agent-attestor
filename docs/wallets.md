@@ -185,3 +185,10 @@ output. Live `verify` returned MATCH on #11 (24 of 52 raw files changed) and #3 
 The first full run, on v5, returned MISMATCH on 9: only the integrity counts differed (checks run
 to the fetch time, and HL compacts old funding rows). v6 moved those counts to the manifest. No
 metric value changed on any wallet.
+
+**On `phase0-v7`**: a Codex review of the v5-v6 code found three issues, all reproduced. A TWAP
+slice and a regular fill in the same millisecond could be replayed in the wrong order and refuse
+a correct account (fixed: ordered by their startPosition chain). Two are limits written up in
+`methodology.md` section 8: some missing perp fills pass every check, and HL's funding compaction
+can shift twrNet slightly on days with a flow. Metrics on all 19 scorable wallets are identical
+to v6.

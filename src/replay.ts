@@ -212,6 +212,7 @@ export function buildAccount(snap: Snapshot): Account {
   const order = { fill: 0, funding: 1, ledger: 2 } as const;
   const idx = new Map(events.map((e, n) => [e, n]));
   events.sort((a, b) => a.time - b.time || order[a.kind] - order[b.kind] || idx.get(a)! - idx.get(b)!);
+  orderAcrossStreams(events);
   const inRange = events.filter((e) => e.time <= anchorTime);
 
   const candles = { "1d": new Map<string, Candle[]>(), "1h": new Map<string, Candle[]>() };
@@ -240,6 +241,46 @@ export function buildAccount(snap: Snapshot): Account {
     twapHistory: json(snap, "twapHistory.json"),
     portfolio: json(snap, "portfolio.json"),
   };
+}
+
+// Within one endpoint, API order is execution order. Between the regular fill stream and the TWAP
+// slice stream nothing says which came first when they share a millisecond and a coin, so order
+// those fills by HL's own startPosition chain: each fill starts where the previous one ended.
+// Ambiguous chains stop scoring rather than guess.
+function orderAcrossStreams(events: Event[]): void {
+  let i = 0;
+  while (i < events.length) {
+    let j = i;
+    while (j < events.length && events[j]!.time === events[i]!.time) j++;
+    const byCoin = new Map<string, number[]>();
+    for (let k = i; k < j; k++) {
+      const e = events[k]!;
+      if (e.kind !== "fill") continue;
+      const list = byCoin.get(e.coin) ?? [];
+      list.push(k);
+      byCoin.set(e.coin, list);
+    }
+    for (const [coin, slots] of byCoin) {
+      const fills = slots.map((k) => events[k] as Fill);
+      if (!fills.some((f) => f.twapId !== null) || !fills.some((f) => f.twapId === null)) continue;
+      const end = (f: Fill) => f.startPosition.plus(f.signedSz).minus(f.spot && f.feeToken === f.base ? f.fee : ZERO);
+      const near = (a: Decimal, b: Decimal) => a.minus(b).abs().lte(DUST);
+      const firsts = fills.filter((f) => !fills.some((g) => g !== f && near(end(g), f.startPosition)));
+      const fail = () => {
+        throw new UnsupportedError(`cannot order ${fills.length} ${coin} fills from the regular and TWAP streams at ${new Date(fills[0]!.time).toISOString()}: their startPositions do not form one chain`);
+      };
+      if (firsts.length !== 1) fail();
+      const chain: Fill[] = [firsts[0]!];
+      while (chain.length < fills.length) {
+        const last = chain[chain.length - 1]!;
+        const next = fills.filter((f) => !chain.includes(f) && near(f.startPosition, end(last)));
+        if (next.length !== 1) fail();
+        chain.push(next[0]!);
+      }
+      slots.forEach((k, n) => (events[k] = chain[n]!));
+    }
+    i = j;
+  }
 }
 
 function ledgerEvent(l: any, me: string): Ledger {

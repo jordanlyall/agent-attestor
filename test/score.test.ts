@@ -151,6 +151,41 @@ describe("TWAP slices", () => {
   });
 });
 
+describe("findings from the Codex review", () => {
+  const files = (s: Snapshot, k: string) => JSON.parse(s.files[k]!);
+
+  it("orders a TWAP slice and a regular fill in the same millisecond by their startPositions", () => {
+    // The 1 BTC buy split in two at the same ms: TWAP slice 0.4 from 0, then a regular 0.6 from 0.4.
+    const s = basicSnapshot();
+    const fills = files(s, "userFillsByTime/0001.json");
+    const open = fills[0];
+    s.files["userFillsByTime/0001.json"] = JSON.stringify([{ ...open, sz: "0.6", fee: "12", startPosition: "0.4", tid: 101, oid: 101 }, ...fills.slice(1)]);
+    s.files["userTwapSliceFillsByTime/0001.json"] = JSON.stringify([{ fill: { ...open, sz: "0.4", fee: "8", tid: 100, oid: 100, twapId: null }, twapId: 7 }]);
+    s.files["twapHistory.json"] = JSON.stringify([{ time: open.time / 1000 + 30, state: { coin: "BTC", sz: "0.4", executedSz: "0.4", timestamp: open.time - 60_000 }, status: { status: "finished" }, twapId: 7 }]);
+    expect(score(s)).toEqual(m);
+  });
+
+  it("documents that funding compaction can shift the return on a day with a flow", () => {
+    // Known limit (methodology section 8): when HL rolls a day's hourly funding into one daily
+    // row, funding paid after that day's deposit is booked at 00:00, before it. Same dollars,
+    // slightly different return. Booking all funding at day end instead was tried and broke
+    // accounts that sweep most of their money out within a day.
+    const hourly = basicSnapshot();
+    const rows = files(hourly, "userFunding/0001.json");
+    for (const r of rows) r.delta.usdc = r.time === Date.parse("2026-01-02T18:00:00Z") ? "-5" : "0.0";
+    hourly.files["userFunding/0001.json"] = JSON.stringify(rows);
+    const daily = basicSnapshot();
+    const jan2 = Date.parse("2026-01-02T00:00:00Z");
+    const kept = rows.filter((r: any) => r.time < jan2 || r.time >= jan2 + 86_400_000);
+    daily.files["userFunding/0001.json"] = JSON.stringify([...kept, { time: jan2, hash: "0x0", delta: { type: "funding", coin: "BTC", usdc: "-5", szi: "1.0", fundingRate: "0.0", nSamples: 19 } }]);
+    const a = score(hourly) as any;
+    const b = score(daily) as any;
+    expect(b.pnlNet).toBe(a.pnlNet);
+    expect(b.fundingNet).toEqual(a.fundingNet);
+    expect(b.twrNet).not.toBe(a.twrNet);
+  });
+});
+
 describe("determinism", () => {
   const shuffled = (s: Snapshot): Snapshot => {
     const keys = Object.keys(s.files).reverse();
@@ -164,7 +199,7 @@ describe("determinism", () => {
     const b = canonicalJson(score(shuffled(basicSnapshot())));
     expect(b).toBe(a);
     // Locked so that any change to the output is deliberate. Update with a methodology bump.
-    expect(sha256(a)).toBe("914c3a193f0cae35d1469834898ba85ff1a31614bf589a7595c80d85ce553d1f");
+    expect(sha256(a)).toBe("a56cfa42fc92b77df90a8ad947b3c1a016da21462bf65a526a92229af013e813");
   });
 
   it("writes no timestamps or floats", () => {
