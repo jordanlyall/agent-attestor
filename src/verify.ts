@@ -1,4 +1,4 @@
-// attestor verify: refetch the same account and period, rescore, and diff against the manifest.
+// pnl-replay verify: refetch the same account and period, rescore, and diff against the manifest.
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -34,7 +34,7 @@ export async function verify(manifestPath: string, log: (s: string) => void): Pr
   }
   const now = scorerCommit();
   if (now.commit !== manifest.scorer.commit || now.dirty) log(`note: scorer is ${now.commit}${now.dirty ? " (dirty)" : ""}, manifest was ${manifest.scorer.commit}`);
-  const tmp = mkdtempSync(join(tmpdir(), "attestor-verify-"));
+  const tmp = mkdtempSync(join(tmpdir(), "pnl-replay-verify-"));
   try {
     const dir = await fetchSnapshot({ address: manifest.address, from: manifest.period.from, to: manifest.period.to, outRoot: tmp, log });
     const { snapshot, hashes } = loadSnapshot(dir);

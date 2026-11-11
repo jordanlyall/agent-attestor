@@ -5,7 +5,7 @@ Checked 2026-11-09/10 against the official docs
 rate-limit pages) and by probing `POST https://api.hyperliquid.xyz/info` directly. Where the docs
 and the live API disagree, both are noted. "Observed" means seen on real wallets, not promised.
 
-## Request types the attestor uses
+## Request types pnl-replay uses
 
 | type | body | used for |
 |---|---|---|
@@ -125,7 +125,7 @@ based limits apply to actions only, not info requests.
 
 - **HL's portfolio counts vault equity and staked HYPE.** A vault deposit is not a flow to HL; the
   vault's PnL is account PnL. Staked HYPE is valued in account value. Both are outside the trading
-  account the attestor scores, which explains 3 of the misses in `wallets.md`.
+  account pnl-replay scores, which explains 3 of the misses in `wallets.md`.
 - **`portfolio.allTime` opens with a placeholder worth 0**, then books the account's existing
   equity as a deposit at the next point. PnL before that point is attributed inside the window.
 - **HL samples sometimes repeat exactly** (same value to 6 decimals on consecutive days while the

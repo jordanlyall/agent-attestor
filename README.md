@@ -1,8 +1,8 @@
-# agent-attestor
+# pnl-replay
 
 **A trading bot's track record, recomputed from public data. Same inputs, same hash, on any machine.**
 
-Every trading bot has a PnL screenshot. Almost none have a record you can check. agent-attestor rebuilds a Hyperliquid account's performance trade by trade from Hyperliquid's public API, so anyone can rerun it and get byte-identical numbers.
+Every trading bot has a PnL screenshot. Almost none have a record you can check. pnl-replay rebuilds a Hyperliquid account's performance trade by trade from Hyperliquid's public API, so anyone can rerun it and get byte-identical numbers.
 
 No keys. No signing. No orders. It only reads.
 
@@ -24,7 +24,7 @@ Wallet addresses come from two public GitHub repos, not from nof1, so treat the 
 ## What a report card looks like
 
 ```
-AGENT ATTESTOR REPORT CARD (Phase 0, unbound)
+PNL REPLAY REPORT CARD (unbound)
 ----------------------------------------------------------------
 Account               0x67293d914eafb26878534571add81f6bd2d9fe06
 Period                2025-10-18 to 2025-11-04 (17 days, marks at 00:00 UTC)
@@ -43,7 +43,7 @@ Method                phase0-v7
 ----------------------------------------------------------------
 ```
 
-That's GPT-5, trimmed. `attestor report` prints the full card.
+That's GPT-5, trimmed. `pnpm replay report` prints the full card.
 
 ## Why you can trust the numbers (or check them)
 
@@ -60,16 +60,16 @@ Node 20+ and pnpm.
 pnpm install
 
 # 1. snapshot an account's public data (raw responses + sha256 per file)
-pnpm attestor fetch 0x67293d914eafb26878534571add81f6bd2d9fe06 --from 2025-10-18 --to 2025-11-04
+pnpm replay fetch 0x67293d914eafb26878534571add81f6bd2d9fe06 --from 2025-10-18 --to 2025-11-04
 
 # 2. score it (writes metrics.json and manifest.json)
-pnpm attestor score data/raw/0x67293d914eafb26878534571add81f6bd2d9fe06/2025-10-18_2025-11-04
+pnpm replay score data/raw/0x67293d914eafb26878534571add81f6bd2d9fe06/2025-10-18_2025-11-04
 
 # 3. print the report card
-pnpm attestor report data/raw/0x67293d914eafb26878534571add81f6bd2d9fe06/2025-10-18_2025-11-04/score/metrics.json
+pnpm replay report data/raw/0x67293d914eafb26878534571add81f6bd2d9fe06/2025-10-18_2025-11-04/score/metrics.json
 
 # 4. refetch, rescore and compare
-pnpm attestor verify data/raw/0x67293d914eafb26878534571add81f6bd2d9fe06/2025-10-18_2025-11-04/score/manifest.json
+pnpm replay verify data/raw/0x67293d914eafb26878534571add81f6bd2d9fe06/2025-10-18_2025-11-04/score/manifest.json
 ```
 
 ## What it measures

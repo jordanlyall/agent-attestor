@@ -1,4 +1,4 @@
-# agent-attestor
+# pnl-replay
 
 Recomputes a Hyperliquid account's performance from public data so anyone can reproduce it.
 Phase 0: fetch, score, verify, report. Read `docs/methodology.md` before changing the scorer.
@@ -46,10 +46,10 @@ Known approximations (candle closes as marks) are written up in `docs/methodolog
 
     pnpm test            # vitest
     pnpm typecheck
-    pnpm attestor fetch <address> --from YYYY-MM-DD --to YYYY-MM-DD
-    pnpm attestor score <snapshot-dir>
-    pnpm attestor verify <snapshot-dir>/score/manifest.json
-    pnpm attestor report <snapshot-dir>/score/metrics.json
+    pnpm replay fetch <address> --from YYYY-MM-DD --to YYYY-MM-DD
+    pnpm replay score <snapshot-dir>
+    pnpm replay verify <snapshot-dir>/score/manifest.json
+    pnpm replay report <snapshot-dir>/score/metrics.json
 
 ## Git
 

@@ -1,4 +1,4 @@
-// attestor score: a pure function from snapshot to metrics.
+// pnl-replay score: a pure function from snapshot to metrics.
 import { Decimal, ZERO, fixed, sum } from "./decimal.js";
 import type { Snapshot } from "./snapshot.js";
 import { buildAccount, applyEvent, checkPositions, checkTwaps, equityOf, exposureOf, flowUsd, holdingsAt, priceSource, UnsupportedError, type Account, type FlowKind, type PriceSource } from "./replay.js";

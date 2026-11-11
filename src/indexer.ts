@@ -1,4 +1,4 @@
-// attestor fetch: snapshot one account's public data for a period, raw and unchanged.
+// pnl-replay fetch: snapshot one account's public data for a period, raw and unchanged.
 import { mkdirSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { InfoClient, type InfoResponse } from "./hl/client.js";

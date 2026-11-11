@@ -6,10 +6,10 @@ import { renderReport } from "./report.js";
 import { verify } from "./verify.js";
 
 const USAGE = `usage:
-  attestor fetch <address> --from YYYY-MM-DD --to YYYY-MM-DD [--out data/raw]
-  attestor score <snapshot-dir>
-  attestor verify <manifest.json>
-  attestor report <metrics.json>`;
+  pnl-replay fetch <address> --from YYYY-MM-DD --to YYYY-MM-DD [--out data/raw]
+  pnl-replay score <snapshot-dir>
+  pnl-replay verify <manifest.json>
+  pnl-replay report <metrics.json>`;
 
 function flag(args: string[], name: string): string | undefined {
   const i = args.indexOf(name);

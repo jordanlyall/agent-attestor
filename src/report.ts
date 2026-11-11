@@ -1,4 +1,4 @@
-// attestor report: a plain-text report card from metrics.json. Display only; floats are fine here.
+// pnl-replay report: a plain-text report card from metrics.json. Display only; floats are fine here.
 const pct = (x: string | null) => (x === null ? "n/a" : `${(Number(x) * 100).toFixed(2)}%`);
 const usd = (x: string) => {
   const n = Number(x);
@@ -54,7 +54,7 @@ export function renderReport(m: any, manifest?: any): string {
   const w = Math.max(...rows.map(([k]) => k.length));
   const line = "-".repeat(64);
   return [
-    "AGENT ATTESTOR REPORT CARD (Phase 0, unbound)",
+    "PNL REPLAY REPORT CARD (unbound)",
     line,
     ...rows.map(([k, v]) => (k ? `${k.padEnd(w)}  ${v}` : "")),
     line,

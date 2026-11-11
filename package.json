@@ -1,5 +1,5 @@
 {
-  "name": "agent-attestor",
+  "name": "pnl-replay",
   "version": "0.0.1",
   "private": true,
   "description": "Recompute a Hyperliquid account's performance from public data, reproducibly.",
@@ -9,10 +9,10 @@
     "node": ">=20"
   },
   "bin": {
-    "attestor": "./bin/attestor.mjs"
+    "pnl-replay": "./bin/pnl-replay.mjs"
   },
   "scripts": {
-    "attestor": "tsx src/cli.ts",
+    "replay": "tsx src/cli.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
